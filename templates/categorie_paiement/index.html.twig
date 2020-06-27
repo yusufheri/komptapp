@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}CategoriePaiement index{% endblock %}
+
+{% block body %}
+    <h1>CategoriePaiement index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>CreatedAt</th>
+                <th>Code</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for categorie_paiement in categorie_paiements %}
+            <tr>
+                <td>{{ categorie_paiement.id }}</td>
+                <td>{{ categorie_paiement.createdAt ? categorie_paiement.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ categorie_paiement.code }}</td>
+                <td>{{ categorie_paiement.name }}</td>
+                <td>{{ categorie_paiement.description }}</td>
+                <td>
+                    <a href="{{ path('categorie_paiement_show', {'id': categorie_paiement.id}) }}">show</a>
+                    <a href="{{ path('categorie_paiement_edit', {'id': categorie_paiement.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('categorie_paiement_new') }}">Create new</a>
+{% endblock %}

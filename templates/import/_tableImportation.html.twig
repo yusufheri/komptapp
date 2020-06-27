@@ -1,0 +1,42 @@
+<div class="container-fluid mt-2">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <td>N°</td>
+                <td>Date</td>
+                <td>File</td>
+                <td>Size</td>
+                <td width="15%">Process</td>
+                <td>Action</td>
+            </tr>
+        </thead>
+        <tbody>
+        {% set i = 0 %}
+        {% for item in data %}
+        {% set i = i + 1 %}
+        {% set pourcent = (item.detailImports | filter(v => v.error is null ) |length) *100/ item.detailImports | length  %}
+            {# {{ item.detailImports | filter(v => v.error is null ) |length }} / {{ item.detailImports | length }} #}
+            <tr>
+                <td>{{ i }}</td>
+                <td>{{ item.createdAt | date('d-m-Y H:i')  }}</td>
+                <td><a href="{{ path('import_detail', {'id': item.id}) }}">{{ item.displayName }}</a></td>
+                <td>{{ (item.filesize / 1024) | number_format(1, '.',',') }} Ko</td>
+                <td style="text-center">                        
+                        <div class="progress">                        
+                            <div class="progress-bar 
+                            {% if pourcent == 100 %} bg-success {% elseif  pourcent < 50 %} bg-danger {% else %} bg-warning {% endif %}
+                            " role="progressbar" style="width: {{ pourcent }}%;" aria-valuenow="{{ pourcent }}" aria-valuemin="0" aria-valuemax="100">
+                                <span >{{ pourcent | number_format }} %</span>
+                            </div>
+                        </div>                               
+                </td>
+                <td>
+                    <a href="{{ path('download_file', {id: item.id}) }}"><i class="fas fa-download btn btn-danger"></i></a>
+                    <a href="{{ path('import_detail', {'id': item.id}) }}"><i class="fas fa-eye btn btn-primary"></i></a>
+                    <a href="#"><i class="fas fa-trash btn btn-danger"></i></a>
+                </td>
+            </tr>            
+        {% endfor %}
+        </tbody>
+    </table>
+</div>

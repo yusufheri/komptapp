@@ -1,0 +1,26 @@
+{% set route_name = app.request.attributes.get('_route') %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+	<a class="navbar-brand" href="{{ path('homepage') }}">KomptApp</a>
+	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor03" aria-controls="navbarColor03" aria-expanded="false" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+	</button>
+
+	<div class="collapse navbar-collapse" id="navbarColor03">
+		<ul class="navbar-nav mr-auto">
+			<li class="nav-item {% if route_name == 'homepage'  %} active {% endif %}">
+				<a class="nav-link" href="{{ path('homepage') }}"><b>Home</b>
+					<span class="sr-only">(current)</span>
+				</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link {% if route_name == 'import_index' %} active {% endif %}" href="{{ path('import_index') }}"><b>Files uploaded</b></a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link {% if route_name == 'import_excel' %} active {% endif %}" href="{{ path('import_excel') }}"><b>Import</b></a>
+			</li>
+		</ul>
+		<form class="form-inline my-2 my-lg-0">
+			<input class="form-control mr-sm-2" type="text" placeholder="Search">
+		</form>
+	</div>
+</nav>

@@ -2,11 +2,15 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <title>{% block title %}Welcome::KomptApp{% endblock %}</title>
+        {{ encore_entry_link_tags('css/app') }}
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.0/css/all.css"  crossorigin="anonymous">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
         {% block body %}{% endblock %}
+        {{ encore_entry_script_tags('js/app') }}
         {% block javascripts %}{% endblock %}
     </body>
 </html>

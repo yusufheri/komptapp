@@ -1,0 +1,19 @@
+vich_uploader:
+    db_driver: orm
+
+    mappings:
+        
+        excel_file:
+            uri_prefix: '%app.path.excel_file%'
+            upload_destination: '%kernel.project_dir%/public%app.path.excel_file%'
+            namer: Vich\UploaderBundle\Naming\UniqidNamer
+
+            inject_on_load: true
+            delete_on_update: false  #default true, should the file be deleted when a new file is uploaded ;
+            delete_on_remove: false #default true, should the file be deleted when the entity is removed ;
+            
+
+    #mappings:
+    #    products:
+    #        uri_prefix: /images/products
+    #        upload_destination: '%kernel.project_dir%/public/images/products'

@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Files uploaded::KomptApp{% endblock %}
+
+{% block body %}
+{% include "partials/layout/header.html.twig" %}
+<div class="container-fluid">
+    <div class="row mt-5">
+        <div class="col-md-8"><h1 class="h1">Historique des importations ({{ data | length }})</h1></div>
+        <div class="col-md-4">
+            <a href="{{ path('import_excel') }}" class="btn btn-primary float-right"><i class="fas fa-download"></i> Nouvelle importation</a>
+        </div>
+    </div>
+    {% include "import/_tableImportation.html.twig"  with {"data" : data} %}
+</div>
+
+{% endblock %}

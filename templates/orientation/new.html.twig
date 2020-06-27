@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Orientation{% endblock %}
+
+{% block body %}
+    <h1>Create new Orientation</h1>
+
+    {{ include('orientation/_form.html.twig') }}
+
+    <a href="{{ path('orientation_index') }}">back to list</a>
+{% endblock %}

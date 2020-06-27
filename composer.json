@@ -5,7 +5,10 @@
         "php": "^7.2.5",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "omines/datatables-bundle": "^0.4.2",
+        "phpoffice/phpspreadsheet": "^1.13",
         "sensio/framework-extra-bundle": "^5.1",
+        "symfony/apache-pack": "^1.0",
         "symfony/asset": "5.1.*",
         "symfony/console": "5.1.*",
         "symfony/dotenv": "5.1.*",
@@ -28,7 +31,9 @@
         "symfony/twig-pack": "*",
         "symfony/validator": "5.1.*",
         "symfony/web-link": "5.1.*",
-        "symfony/yaml": "5.1.*"
+        "symfony/webpack-encore-bundle": "^1.7",
+        "symfony/yaml": "5.1.*",
+        "vich/uploader-bundle": "^1.14"
     },
     "require-dev": {
         "symfony/debug-pack": "*",
@@ -72,6 +77,9 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
+        ],
+        "compile": [
+            "php bin/console doctrine:migrations:migrate --no-interaction" 
         ]
     },
     "conflict": {
