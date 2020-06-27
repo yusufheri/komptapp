@@ -16,13 +16,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use Vich\UploaderBundle\Handler\DownloadHandler;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-//use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
-
-/* use Omines\DataTablesBundle\Adapter\ArrayAdapter;
-use Omines\DataTablesBundle\Column\TextColumn;
-use Omines\DataTablesBundle\DataTableFactory; 
-use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
-use Symfony\Component\Validator\Constraints\Json;*/
 
 class ImportController extends AbstractController
 {
@@ -46,7 +39,7 @@ class ImportController extends AbstractController
     }
 
     /**
-     * @Route("/import", name="import_index")
+     * @Route("/", name="import_index")
      */
     public function index(ImportFilesRepository $importFilesRepository)
     {
