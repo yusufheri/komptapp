@@ -16,7 +16,10 @@
 				<a class="nav-link {% if route_name == 'import_index' %} active {% endif %}" href="{{ path('import_index') }}"><b>Files uploaded</b></a>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link {% if route_name == 'import_excel' %} active {% endif %}" href="{{ path('import_excel') }}"><b>Import</b></a>
+				<a class="nav-link {% if route_name == 'import_excel' %} active {% endif %}" href="{{ path('import_excel') }}"><b>Import Single File</b></a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link {% if route_name == 'import_multi_files' %} active {% endif %}" href="{{ path('import_multi_files') }}"><b>Import Multi Files</b></a>
 			</li>
 		</ul>
 		<form class="form-inline my-2 my-lg-0">

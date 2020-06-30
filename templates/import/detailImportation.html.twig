@@ -23,7 +23,7 @@
         <div class="col-md-9">
             <div class="row">
                 <div class="col-md-12"><h1 class="h3">Nom du  fichier : {{ importFile.displayName }} (<span id="count"></span>)</h1></div>
-                <div class="col-md-12"><h1 class="h3 text-info">Période du {{ importFile.toAt | date('Y-m-d') }} au {{ importFile.fromAt | date('Y-m-d') }} ({{ importFile.createdAt | date('Y-m-d H:i') }})</h1></div>
+                <div class="col-md-12"><h1 class="h3 text-info">Période du {{ importFile.fromAt | date('Y-m-d') }} au {{ importFile.toAt | date('Y-m-d') }} ({{ importFile.createdAt | date('Y-m-d H:i') }})</h1></div>
                 <div class="col-md-12">
                     <div class="row">
                         <div class="col-md"><h1 class="h3 text-success">{{ importFile.detailImports | filter(v => v.error is null ) |length }} ligne(s) avec succès</h1></div>
@@ -76,7 +76,7 @@
     <script>
     $(document).ready(function(){
         var url = window.location.href.split('/')
-        var id = url[url.length-2];
+        var id = url[url.length-1];
         var baseurl = "/import/"+id+"/datatable";
         var xmlhttp = new XMLHttpRequest();
         xmlhttp.open("GET",baseurl,true);

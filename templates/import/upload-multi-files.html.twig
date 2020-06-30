@@ -1,0 +1,97 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Import files::KomptApp{% endblock %}
+
+{% block body %}
+    {% include "partials/layout/header.html.twig" %}
+    <div class="container">       
+        <h1 class="h1 my-2">Importation des plusieurs fichiers</h1>
+        <div class="row">
+            <div class="col-md-12" id="message"></div>
+        </div>
+        <hr>
+        <div class="alert alert-light">
+            <div class="col-lg-12 p-t-20">
+                <label class="control-label col-md-3">Téléverser les fichiers Excel</label>
+                <div class="col-md-12">
+                    <div id="id_dropzone" class="dropzone dz-clickable"><div class="dz-default dz-message"><span>Déposez les fichisers à téléverser ici</span></div></div>
+                </div>
+            </div>
+            <div class="alert alert-primary clearfix my-5">
+                <h2 class="alert-heading">Sauvegarder les informations</h2>
+                <p>Vous êtes sur le point de téléverser les fichiers dans le serveur, seuls les fichiers CSV et Excel sont acceptés.</p>
+            </div>
+        </div>    
+    </div>
+{% endblock %}
+{% block javascripts %}
+    <!-- dropzone -->
+	<script src="../assets/plugins/dropzone/dropzone.js"></script>
+	<script src="../assets/plugins/dropzone/dropzone-call.js"></script>
+    <script>
+        $(document).ready(function(){
+
+            $("#import_excelFile").on('change', function(e){
+                e.preventDefault();
+
+                formdata = new FormData();
+                if($(this).prop('files').length > 0)
+                {
+                    file =$(this).prop('files')[0];
+                    $("#filename").html(file["name"])
+                    formdata.append("excelFile", file);
+                }
+
+                $.ajax({
+                    url: "{{ path('import_preview') }}",
+                    method: "POST",
+                    data: formdata,
+                    contentType: false,
+                    cache: false,
+                    processData: false,
+                    beforeSend:function(){ 
+                        $("#message").html("")
+                        $(".lisungi").attr('disabled', 'disabled');
+                        $("#preview_excel").html('<p class="text-danger h3 mt-3">Chargement du contenu du fichier en cours ...</p>');
+                    },
+                    success:function(data){
+                        $("#preview_excel").html(data);
+                        $('table').addClass('table')
+                        $('table').addClass('table-hover')
+                        $('table').removeClass('sheet0')                        
+                        $(".lisungi").attr('disabled', false);                      
+                        //$(".impression").html('<i class="fas fa-eye"></i>  Afficher le contenu');                
+                    }
+                })
+            })
+
+            $('form').on('submit', function(e) {
+                e.preventDefault()
+                $.ajax({
+                    url: "{{ path('import_excel') }}",
+                    method: "POST",
+                    data: new FormData(this),
+                    contentType: false,
+                    cache: false,
+                    processData: false,
+                    beforeSend:function(){                        
+                        $(".lisungi").html(' <i class="fas fa-spinner"></i> Importation en cours...');
+                        $(".lisungi").attr('disabled', 'disabled');
+                    },
+                    success:function(data){
+                        $("#message").html(data);
+                        $('form')[0].reset();
+                        $(".lisungi").attr('disabled', false);                      
+                        $(".lisungi").html('<i class="fas fa-check"></i> Enregistrer les données');
+                        
+                        $("#filename").html("")
+                        $("#preview_excel").html("");           
+                    },error:function(){
+
+                    }
+                })
+            })
+
+        })
+    </script>
+{% endblock %}

@@ -16,6 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Vich\UploaderBundle\Handler\DownloadHandler;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 class ImportController extends AbstractController
 {
@@ -39,7 +40,7 @@ class ImportController extends AbstractController
     }
 
     /**
-     * @Route("/", name="import_index")
+     * @Route("/import", name="import_index")
      */
     public function index(ImportFilesRepository $importFilesRepository)
     {
@@ -61,7 +62,7 @@ class ImportController extends AbstractController
 
     /**
      * Detail d'un fichier 
-     * @Route("/import/{id<\d+>}/details", name="import_detail")
+     * @Route("/import/{id<\d+>}", name="import_detail")
      * @param ImportFilesRepository $importFilesRepository
      * @return Response
      */
@@ -69,6 +70,114 @@ class ImportController extends AbstractController
     {
         return $this->render('import/detailImportation.html.twig', [
             'importFile' => $importFile
+        ]);
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @Route("/import/ajax_file_upload_handler", name="ajax_file_upload_handler")
+     * @return Response|string
+     */
+    public function files_ajax(Request $request)
+    {
+        $file = $request->files->get("file");
+
+        $importFile = new ImportFiles();
+
+        if(is_null($file)) return new Response($this->noFile);                
+
+        $fileName = $file->getClientOriginalName();
+        $fileExtension = $file->getClientOriginalExtension(); 
+        $inputFileName = $file->getRealPath();
+        $size = $file->getSize(); 
+
+        if( $fileName!= '') {
+            $allowed_extension = array('csv', 'xls', 'xlsx');
+
+            if(in_array($fileExtension, $allowed_extension))
+            {
+
+                $file_Type = IOFactory::identify($inputFileName);
+                $reader = IOFactory::createReader($file_Type);
+                $spreadsheet = $reader->load($inputFileName);
+                $data = $spreadsheet->getActiveSheet()->toArray();
+
+                $newFileName = uniqid("multi_").".".$fileExtension;
+
+                $dateFromTo = explode(":", $data[2][0]);
+                $to = trim($dateFromTo[3]);
+                $form = trim($dateFromTo[2]);
+                
+                $importFile ->setAccountBankName(trim(explode(":",$data[1][0])[1]))
+                            ->setAccountBankNumber(trim(explode(":",$data[0][0])[1]))
+                            ->setToAt(DetailImport::formatDate($to))
+                            ->setFromAt(DetailImport::formatDate($form))
+                            ->setDisplayName($fileName)
+                            ->setFilename($newFileName)
+                            ->setFilesize($size);
+        
+                $this->manager->persist($importFile);
+
+                $counter = 0;
+                foreach($data as $row) {
+                    if ($counter > 3) {
+                        $detail = new DetailImport($row);
+                        $detail->setImportFile($importFile);
+                        $this->manager->persist($detail);
+                    }
+                    $counter ++;
+                }
+
+                try {
+                    $file->move(
+                        $this->getParameter('multi_uploads_files'),
+                        $newFileName
+                    );
+                } catch (FileException $e) {
+                    return new Response($e->getMessage());
+                    // ... handle exception if something happens during file upload
+                }
+
+
+                //$uploads_dir = "/uploads/files/excel";
+                //$file->move($uploads_dir, $newFileName);
+                //move_uploaded_file($inputFileName, "$uploads_dir$newFileName");
+                $message = '<div class="alert alert-dismissible alert-success">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <h4 class="alert-heading">Félicitations !</h4>
+                                <p class="mb-0">
+                                    Le fichier a été importé avec succès :)
+                                </p>                 
+                            </div>
+                ';
+            } else {
+                $message = '<div class="alert alert-dismissible alert-info"> 
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <h4 class="alert-heading">Attention !</h4>
+                                <p class="mb-0">
+                                    Seules les extensions suivantes sont prises en charge (CSV, XLS, XLSX)
+                                </p>                   
+                            </div>';
+            }
+
+        } else {
+            $message = $this->noFile;
+        }
+        $this->manager->flush();
+
+        return new Response($message);
+    }
+
+    /**
+     * Upload multi files
+     * @Route("/import/upload-multi-files", name="import_multi_files")
+     * @return Response
+     */
+    public function multiFiles()
+    {
+        return $this->render('import/upload-multi-files.html.twig', [
+        
         ]);
     }
     
@@ -156,8 +265,8 @@ class ImportController extends AbstractController
                         $data = $spreadsheet->getActiveSheet()->toArray();
 
                         $dateFromTo = explode(":", $data[2][0]);
-                        $to = trim($dateFromTo[2]);
-                        $form = trim($dateFromTo[3]);
+                        $to = trim($dateFromTo[3]);
+                        $form = trim($dateFromTo[2]);
                         
                         $importFile ->setAccountBankName(trim(explode(":",$data[1][0])[1]))
                                     ->setAccountBankNumber(trim(explode(":",$data[0][0])[1]))
