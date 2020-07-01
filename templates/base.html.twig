@@ -39,14 +39,33 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
         {% block stylesheets %}{% endblock %}
     </head>
-    <body>
-        {% block body %}{% endblock %}
+    <body class="page-header-fixed sidemenu-closed-hidelogo page-content-white page-md sidemenu-closed header-white white-sidebar-color logo-indigo">
+        <div class="page-wrapper">
+            {% include "partials/dashboard/header.html.twig" %}
+            {# {% include "home/partials/quick-setting.html.twig" %} #}
+            <!-- start page container -->
+		    <div class="page-container">
+                {% include "partials/dashboard/menu.html.twig" %}
+                <!-- start page content -->
+			    <div class="page-content-wrapper">
+                    <div class="page-content">
+                        {% block body %}{% endblock %}
+                    </div>
+                </div>
+			    <!-- end page content -->
+            </div>
+		    <!-- end page container -->
+            {% include "partials/dashboard/footer.html.twig" %}
+        </div>
+        
         <script src="../assets/plugins/jquery/jquery.min.js"></script>
         <script src="../assets/plugins/popper/popper.js"></script>
         <script src="../assets/plugins/jquery-blockui/jquery.blockui.min.js"></script>
         <script src="../assets/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
         <!-- bootstrap -->
         <script src="../assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+        <script src="../assets/plugins/sparkline/jquery.sparkline.js"></script>
+        <script src="../assets/js/pages/sparkline/sparkline-data.js"></script>
         <script src="../assets/plugins/bootstrap-switch/js/bootstrap-switch.min.js"></script>
         <script src="../assets/plugins/bootstrap-inputmask/bootstrap-inputmask.min.js"></script>
         <script src="../assets/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.js" charset="UTF-8"></script>
@@ -59,6 +78,13 @@
         <script src="../assets/js/theme-color.js"></script>
         <!-- Material -->
         <script src="../assets/plugins/material/material.min.js"></script>
+        <!-- chart js -->
+        <script src="../assets/plugins/chart-js/Chart.bundle.js"></script>
+        <script src="../assets/plugins/chart-js/utils.js"></script>
+        <script src="../assets/js/pages/chart/chartjs/home-data.js"></script>
+        <!-- summernote -->
+        <script src="../assets/plugins/summernote/summernote.js"></script>
+        <script src="../assets/js/pages/summernote/summernote-data.js"></script>
         <!--select2-->
         <script src="../assets/plugins/select2/js/select2.js"></script>
         <script src="../assets/js/pages/select2/select2-init.js"></script>

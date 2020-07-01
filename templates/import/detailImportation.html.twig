@@ -13,21 +13,20 @@
     </style>
 {% endblock %}
 {% block body %}
-{% include "partials/layout/header.html.twig" %}
 <div class="container-fluid">
-    <div class="row mt-5">
-        <div class="col-md-3">
-        {% set extension  = importFile.displayName %}
-            <i class="fa  {% if 'csv' in importFile.filename  %} fa-file-text-o {% else  %}fa-file-excel-o {% endif %} fa-6 ml-5" aria-hidden="true" style="font-size: 10em;margin-right: .07142857em;"></i>
+    <div class="row">
+        <div class="col-md-3 mt-5">
+            {% set extension  = importFile.displayName %}
+            <i class="mt-5 ml-5 fa  {% if 'csv' in importFile.filename  %} fa-file-text-o {% else  %}fa-file-excel-o {% endif %} fa-6 ml-5" aria-hidden="true" style="font-size: 10em;margin-right: .07142857em;"></i>
         </div>
         <div class="col-md-9">
             <div class="row">
-                <div class="col-md-12"><h1 class="h3">Nom du  fichier : {{ importFile.displayName }} (<span id="count"></span>)</h1></div>
-                <div class="col-md-12"><h1 class="h3 text-info">Période du {{ importFile.fromAt | date('Y-m-d') }} au {{ importFile.toAt | date('Y-m-d') }} ({{ importFile.createdAt | date('Y-m-d H:i') }})</h1></div>
+                <div class="col-md-12"><h3 class="h3">Nom du  fichier : {{ importFile.displayName }} (<span id="count"></span>)</h3></div>
+                <div class="col-md-12"><h3 class="h3 text-info">Période du {{ importFile.fromAt | date('Y-m-d') }} au {{ importFile.toAt | date('Y-m-d') }} ({{ importFile.createdAt | date('Y-m-d H:i') }})</h3></div>
                 <div class="col-md-12">
                     <div class="row">
-                        <div class="col-md"><h1 class="h3 text-success">{{ importFile.detailImports | filter(v => v.error is null ) |length }} ligne(s) avec succès</h1></div>
-                        <div class="col-md"><h1 class="h3 text-danger float-left">{{ importFile.detailImports | filter(v => v.error is not null ) |length }} ligne(s) avec erreur</h1></div>
+                        <div class="col-md"><h3 class="h3 text-success">{{ importFile.detailImports | filter(v => v.error is null ) |length }} ligne(s) avec succès</h3></div>
+                        <div class="col-md"><h3 class="h3 text-danger float-left">{{ importFile.detailImports | filter(v => v.error is not null ) |length }} ligne(s) avec erreur</h3></div>
                     </div>
                 </div>  
                 
