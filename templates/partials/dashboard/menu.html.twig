@@ -12,72 +12,119 @@
 							<li class="sidebar-user-panel">
 								<div class="user-panel">
 									<div class="pull-left image">
-										<img src="../assets/img/dp.jpg" class="img-circle user-img-circle" alt="User Image" />
+										<img src="{{ asset('assets/img/dp.jpg')}}" class="img-circle user-img-circle" alt="User Image" />
 									</div>
 									<div class="pull-left info">
-										<p> Kiran Patel</p>
-										<a href="#"><i class="fa fa-circle user-online"></i><span class="txtOnline"> Online</span></a>
+										<p> Administrateur</p>
+										<a href="#"><i class="fa fa-circle user-online"></i><span class="txtOnline"> En ligne</span></a>
 									</div>
 								</div>
 							</li>
 							<li class="nav-item start active open">
 								<a href="{{ path('homepage') }}" class="nav-link nav-toggle"><i class="material-icons">dashboard</i>
-									<span class="title">Dashboard</span>
+									<span class="title">Tableau de bord</span>
 								</a>
 							</li>
+
 							<li class="nav-item">
-								<a href="#" class="nav-link nav-toggle"> <i class="fa fa-cloud-upload" aria-hidden="true"></i>
-									<span class="title">Importation</span> <span class="arrow"></span>
-								</a>
+								<a href="#" class="nav-link nav-toggle"><i class="material-icons">group</i>
+									<span class="title">Etudiants</span><span class="arrow"></span></a>
 								<ul class="sub-menu">
 									<li class="nav-item">
-										<a href="{{path('import_index')}}" class="nav-link "><i class="material-icons">cloud_done</i> <span class="title">Historiques</span>
+										<a href="#" class="nav-link "> <span class="title"><i class="fa fa-search-plus"></i> Filtrage</span>
 										</a>
 									</li>
 									<li class="nav-item">
-										<a href="{{path('import_excel')}}" class="nav-link "><i class="material-icons">cloud_download</i> <span class="title">Single file</span>
-										</a>
-									</li>
-									<li class="nav-item">
-										<a href="{{path('import_multi_files')}}" class="nav-link "><i class="material-icons">cloud_circle</i> <span class="title">Multi files</span>
+										<a href="#" class="nav-link "> <span class="title"><i class="fa fa-user-plus" aria-hidden="true"></i> Enregistrement</span>
 										</a>
 									</li>
 								</ul>
 							</li>
+
+							<li class="nav-item">
+								<a href="#" class="nav-link nav-toggle"><i class="material-icons">monetization_on</i>
+									<span class="title">Caisse (entrées)</span><span class="arrow"></span></a>
+								<ul class="sub-menu">
+									<li class="nav-item">
+										<a href="#" class="nav-link "> <span class="title"><i class="fa fa-bar-chart-o"></i> Historique des entrées</span>
+										</a>
+									</li>
+									<li class="nav-item">
+										<a href="#" class="nav-link "> <span class="title"><i class="fa fa-plus"></i> Nouvelle entrée</span>
+										</a>
+									</li>
+									<li class="nav-item">
+										<a href="#" class="nav-link "> <span class="title"><i class="fa fa-file-excel-o"></i> Importation du fichier</span>
+										</a>
+									</li>
+								</ul>
+							</li>
+
+							<li class="nav-item">
+								<a href="#" class="nav-link nav-toggle"><i class="material-icons">remove_circle</i>
+									<span class="title">Dépenses (sorties)</span><span class="arrow"></span></a>
+								<ul class="sub-menu">
+									<li class="nav-item">
+										<a href="#" class="nav-link "> <span class="title"> <i class="fas fa-chart-line    "></i> Historique</span>
+										</a>
+									</li>
+									<li class="nav-item">
+										<a href="#" class="nav-link "> <span class="title"><i class="fa fa-plus"></i> Enregistrement</span>
+										</a>
+									</li>
+								</ul>
+							</li>
+
+							<li class="nav-item">
+								<a href="#" class="nav-link nav-toggle"> <i class="material-icons">cloud_download</i>
+									<span class="title">Téléversement</span> <span class="arrow"></span>
+								</a>
+								<ul class="sub-menu">
+									<li class="nav-item">
+										<a href="{{path('import_index')}}" class="nav-link "><i class="material-icons">cloud_done</i> <span class="title">Historique des fichiers</span>
+										</a>
+									</li>
+									<li class="nav-item">
+										<a href="{{path('import_excel')}}" class="nav-link "><i class="material-icons">cloud_download</i> <span class="title">Téléverser un fichier</span>
+										</a>
+									</li>
+									<li class="nav-item">
+										<a href="{{path('import_multi_files')}}" class="nav-link "><i class="material-icons">cloud_circle</i> <span class="title">Téléverser plusieurs fichiers</span>
+										</a>
+									</li>
+								</ul>
+							</li>
+
+							<li class="nav-item">
+								<a href="{{ path('admin_rubrique') }}" class="nav-link nav-toggle"><i class="material-icons">insert_chart</i>
+									<span class="title">Rubriques</span>
+								</a>
+							</li>
+
+							<li class="nav-item">
+								<a href="{{ path('homepage') }}" class="nav-link nav-toggle"><i class="material-icons">timeline</i>
+									<span class="title">Comptes</span>
+								</a>
+							</li>							
+							
 							<li class="nav-item">
 								<a href="#" class="nav-link nav-toggle"> <i class="fa fa-cogs" aria-hidden="true"></i>
 									<span class="title">Paramètres</span><span class="arrow"></span></a>
 								<ul class="sub-menu">
 									<li class="nav-item">
-										<a href="all_students.html" class="nav-link "><i class="fa fa-plus-circle" aria-hidden="true"></i> <span class="title">Comptes</span>
+										<a href="{{ path('admin_compte') }}" class="nav-link "><i class="fa fa-plus-circle" aria-hidden="true"></i> <span class="title">Motifs</span>
 										</a>
 									</li>
                                     <li class="nav-item">
-										<a href="all_students.html" class="nav-link "><i class="fa fa-plus-circle" aria-hidden="true"></i> <span class="title">Devise</span>
+										<a href="{{ path('admin_sous_rubrique') }}" class="nav-link "><i class="fa fa-plus-circle" aria-hidden="true"></i> <span class="title">Sous-rubriques</span>
 										</a>
 									</li>
-                                    <li class="nav-item">
-										<a href="all_students.html" class="nav-link "><i class="fa fa-plus-circle" aria-hidden="true"></i> <span class="title">Motif</span>
+									<li class="nav-item">
+										<a href="{{ path('admin_rubrique') }}" class="nav-link "><i class="fa fa-plus-circle" aria-hidden="true"></i> <span class="title">Comptes</span>
 										</a>
 									</li>
-                                    <li class="nav-item">
-										<a href="all_students.html" class="nav-link "><i class="fa fa-plus-circle" aria-hidden="true"></i> <span class="title">Section</span>
-										</a>
-									</li>
-                                    <li class="nav-item">
-										<a href="all_students.html" class="nav-link "><i class="fa fa-plus-circle" aria-hidden="true"></i> <span class="title">Orientation</span>
-										</a>
-									</li>
-                                    <li class="nav-item">
-										<a href="all_students.html" class="nav-link "><i class="fa fa-plus-circle" aria-hidden="true"></i> <span class="title">Promotions</span>
-										</a>
-									</li>
-                                    <li class="nav-item">
-										<a href="all_students.html" class="nav-link "><i class="fa fa-plus-circle" aria-hidden="true"></i> <span class="title">Civilité</span>
-										</a>
-									</li>
-                                    <li class="nav-item">
-										<a href="all_students.html" class="nav-link "><i class="fa fa-plus-circle" aria-hidden="true"></i> <span class="title">Tranches</span>
+									<li class="nav-item">
+										<a href="{{ path('devise_index') }}" class="nav-link "><i class="fa fa-plus-circle" aria-hidden="true"></i> <span class="title">Devise</span>
 										</a>
 									</li>
 								</ul>

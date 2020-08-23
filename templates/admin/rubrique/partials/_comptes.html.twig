@@ -1,0 +1,40 @@
+<div class="table-wrap">
+    <div class="table-responsive">
+        <table class="table table-striped custom-table table-hover" id="exampleComptes">
+            <thead>
+                <tr>
+                    <td class="text-center" width="4%">N°</td>
+                    <td class="text-center" width="10%">Enregistré</td>
+                    <td class="text-left" width="25%">Comptes</td>
+                    <td class="text-center" width="5%">%</td>
+                    <td class="text-center" width="13%">Montant</td>
+                </tr>
+            </thead>
+            <tbody>
+            {% set somme = 0 %}
+            {% set i = 1 %}
+                {% for item in rubrique.rubriqueComptes %}
+                    <tr>
+                        <td class="text-center">{{ i }}</td>
+                        <td class="text-center" >{{item.createdAt | date("d-m-Y")}}</td>
+                        <td >{{item.compte.name}}</td>
+                        <td class="text-center">{{item.percent}}</td>
+                        <td class="text-right"><b>{{item.amount | number_format(2,',',' ') ~' '~ devise}}</b></td>                        
+                    </tr>
+                    {% set somme = somme +  item.amount %}
+                    {% set i = i + 1 %}
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr style="background-color:">
+                    <td class="text-center" width="4%"></td>
+                    <td class="text-center" width="10%"></td>
+                    <td class="text-left" width="25%"></td>
+                    <td class="text-center" width="5%"></td>
+                    <td class="text-right" width="13%"><b>{{somme | number_format(2,',',' ') ~' '~ devise}}</b></td>
+                    <td class="text-center" width="5%"></td>
+                </tr>
+            </tfoot>                                
+        </table>
+    </div>
+</div>

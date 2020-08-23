@@ -1,0 +1,91 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Création d'une rubrique::KomptApp{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        td.highlight {
+            background-color: whitesmoke !important;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    {% include "home/partials/page-bar.html.twig" with {title : "Gestion des rubriques", bigTitle: "Création des rubriques"  } %}
+    <div id="bar-parent">
+        <div id="message"></div>       
+        <form method="post" id="formRubrique">
+            <input type="hidden" name="token" value="{{ csrf_token('security') }}" />
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="simpleFormEmail">Code</label>
+                        <input type="text" class="form-control" id="code" placeholder="Saisir un code" name="code">
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <div class="form-group">
+                        <label for="simpleFormPassword">Libellé<span class="required" aria-required="true"> * </span></label>
+                        <input type="text" class="form-control" id="name" placeholder="L'intitulé de la rubrique" name="name">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="simpleFormEmail">Devise<span class="required" aria-required="true"> * </span></label>
+                        <select class="js-example-basic-single form-control" name="devise" id="devise" placeholder="Sélectionnez la dévise">
+                            {% for item in devises %}
+                                <option value="{{ item.id }}">{{ item.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="simpleFormPassword">Montant (totalité)<span class="required" aria-required="true"> * </span></label>
+                        <input type="number" class="form-control" id="montant" placeholder="Montant" name="montant">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="simpleFormEmail">Première tranche</label>
+                        <input type="number" class="form-control"  placeholder="Sasir un montant" name="tranche_one">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="simpleFormPassword">Deuxième tranche</label>
+                        <input type="number" class="form-control"  placeholder="Sasir un montant" name="tranche_two">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="simpleFormEmail">Sous rubriques</label>
+                <select  class="form-control js-example-basic-multiple" name="sousRubriques[]" id="multiple"  multiple>
+                    <option value="-1">Sélectionnez une sous rubrique s'il y en a </option>
+                    {% for item in sous_rubriques %}
+                        <option value="{{ item.id }}">{{ item.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="">Description</label>
+                <textarea name="content" id="content" class="form-control" rows="4" placeholder="Laisser un commentaire "></textarea>
+            </div>
+            <button type="button" class="btn btn-circle btn-default m-b-10" id="btnCancel" data-dismiss="modal"><i class="fa fa-trash"></i> Annuler</button>
+            <button type="submit" class="btn btn-circle btn-primary float-right m-b-10" id="btnSave"><i class="fa fa-check"></i> Enregistrer</button>
+        </form>       
+    </div>
+{% endblock %}
+
+{% block javascripts %}    
+    <script>
+        $(document).ready(function() {
+            $('.js-example-basic-single').select2();
+            $('.js-example-basic-multiple').select2();
+        });
+    </script>
+{% endblock %}
+

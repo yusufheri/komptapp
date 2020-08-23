@@ -1,0 +1,84 @@
+<div class="card card-box">
+    <div class="card-head">
+        <header>Création d'une sous-rubrique</header>
+    </div>
+    <div class="card-body " id="bar-parent">
+        <div id="message"></div>       
+        <form method="post" id="formCompte">
+            <input type="hidden" name="token" value="{{ csrf_token('security') }}" />
+            <div class="form-group">
+                <label for="simpleFormEmail">Code</label>
+                <input type="text" class="form-control" id="code" placeholder="Sasir un code pour cette sous-rubrique" name="code">
+            </div>
+            <div class="form-group">
+                <label for="simpleFormPassword">Libellé</label>
+                <input type="text" class="form-control" id="name" placeholder="L'intitulé de la sous rubrique" name="name">
+            </div>
+            <div class="form-group">
+                <label for="">Description</label>
+                <textarea name="content" id="content" class="form-control" rows="4" placeholder="Laisser un commentaire "></textarea>
+            </div>
+            <button type="button" class="btn btn-circle btn-default m-b-10" id="btnCancel"><i class="fa fa-trash"></i> Annuler</button>
+            <button type="submit" class="btn btn-circle btn-primary float-right m-b-10" id="btnSave"><i class="fa fa-check"></i> Enregistrer</button>
+        </form>
+    </div>
+</div>
+
+{#
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form>
+                <div class="form-group">
+                    <label for="recipient-name" class="col-form-label">Recipient:</label>
+                    <input type="text" class="form-control" id="recipient-name">
+                </div>
+                <div class="form-group">
+                    <label for="message-text" class="col-form-label">Message:</label>
+                    <textarea class="form-control" id="message-text"></textarea>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal"> <i class="fa fa-trash" aria-hidden="true"></i> Fermer</button>
+            <button type="button" class="btn btn-primary"><i class="fa fa-check-circle" aria-hidden="true"></i> Enregistrer</button>
+        </div>
+    </div>
+    </div>
+</div>
+ 
+<div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+            <form>
+                <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Recipient:</label>
+                <input type="text" class="form-control" id="recipient-name">
+                </div>
+                <div class="form-group">
+                <label for="message-text" class="col-form-label">Message:</label>
+                <textarea class="form-control" id="message-text"></textarea>
+                </div>
+            </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"> <i class="fa fa-trash" aria-hidden="true"></i> Fermer</button>
+                <button type="button" class="btn btn-primary"><i class="fa fa-check-circle" aria-hidden="true"></i> Enregistrer</button>
+            </div>
+        </div>
+    </div>
+</div> #}

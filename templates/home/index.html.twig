@@ -3,11 +3,17 @@
 {% block title %}Welcome::KomptApp{% endblock %}
 
 {% block body %}
-    {% include "home/partials/page-bar.html.twig" with {title : "Dashboard"} %}
+    {% include "home/partials/page-bar.html.twig" with {title : "Tableau de bord", bigTitle: "Tableau de bord"} %}
 
     {% include "home/partials/state-overview.html.twig" %}
 
     {% include "home/partials/chart-start.html.twig" %}
 
     {% include "home/partials/tasks.html.twig" %}
+{% endblock %}
+{% block javascripts %}
+    <!-- chart js -->
+    <script src="../assets/plugins/chart-js/Chart.bundle.js"></script>
+    <script src="../assets/plugins/chart-js/utils.js"></script>
+    <script src="../assets/js/pages/chart/chartjs/home-data.js"></script>
 {% endblock %}

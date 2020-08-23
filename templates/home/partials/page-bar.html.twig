@@ -1,12 +1,27 @@
 <div class="page-bar">
     <div class="page-title-breadcrumb">
         <div class=" pull-left">
-            <div class="page-title">Dashboard</div>
+            <div class="page-title">{{bigTitle}}</div>
         </div>
         <ol class="breadcrumb page-breadcrumb pull-right">
-            <li><i class="fa fa-home"></i>&nbsp;<a class="parent-item" href="{{path('homepage')}}">Home</a>&nbsp;<i class="fa fa-angle-right"></i>
+            <li>
+                <i class="fa fa-home"></i>&nbsp;<a class="parent-item" href="{{path('homepage')}}">Home</a>&nbsp;<i class="fa fa-angle-right"></i>
             </li>
-            <li class="active">{{title}}</li>
+            {% if ':' in title %}
+                {% set tab = title|split(':') %}
+                {% if tab|length == 2 %}
+                    {% set tab2 = tab[0] | split(',') %}
+                    {% set title2 = tab2[0] | trim %}
+                    {% set url = tab2[1] | trim %}
+                {% endif %}
+                <li class="">
+                    <a class="parent-item" href="{{ path(url) }}">{{title2}}</a>&nbsp;<i class="fa fa-angle-right"></i>                                
+                </li>
+                <li class="active">{{tab[1]}}</li>
+            {% else %}
+                <li class="active">{{title}}</li>
+            {% endif %}           
+            
         </ol>
     </div>
 </div>

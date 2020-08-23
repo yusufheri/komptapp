@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello RubriqueController!{% endblock %}
+
+{% block body %}
+{% include "home/partials/page-bar.html.twig" with {title : "Nouvelle rubrique", bigTitle: "Formulaire de création d'une rubrique"  } %}
+<div class="row">
+    <div class="col-md-2">&nbsp;</div>
+    <div class="col-md-8">
+    <div class="alert alert-light">
+        {{ form_start(form) }}
+    
+        <div class="row">
+            <div class="col-md-4">{{ form_row(form.rubrique.code) }}</div>
+            <div class="col-md-8">{{ form_row(form.rubrique.name) }}</div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">{{ form_row(form.devise) }}</div>
+            <div class="col-md-8">{{ form_row(form.amount) }}</div>
+        </div>
+        {{ form_widget(form) }}
+        <div class="alert alert-primary clearfix my-5">
+            <h2 class="alert-heading">Sauvegarder les informations</h2>
+            <p>Vous êtes sur le point de créer une nouvelle rubrique</p>
+            <button type="submit" class="btn btn-success btn-lg float-right lisungi">
+                <i class="fas fa-check"></i>
+                Enregistrer les données
+            </button>
+        </div>
+        {{ form_end(form) }}    
+    </div>
+    
+    </div>
+    <div class="col-md-2">&nbsp;</div>    
+</div>
+{% endblock %}

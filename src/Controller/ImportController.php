@@ -42,27 +42,15 @@ class ImportController extends AbstractController
     /**
      * @Route("/import", name="import_index")
      */
-    public function index(ImportFilesRepository $importFilesRepository)
+    public function index()
     {
         return $this->render('import/index.html.twig', [
-            'data' => $importFilesRepository->findAll(),
         ]);
-    }
-
-    /**
-     * Undocumented function
-     * @Route("/import/{id}/datatable", name="datatable")
-     * @param ImportFiles $importFile
-     */
-    public function dataTable(ImportFiles $importFile)
-    {
-        $repo = $this->getDoctrine()->getManager()->getRepository(DetailImport::class);
-        return  $this->json($repo->findBy(['importFile' => $importFile]), 200, [], ['groups' => 'detailImport:read']);
-    }
+    }    
 
     /**
      * Detail d'un fichier 
-     * @Route("/import/{id<\d+>}", name="import_detail")
+     * @Route("/import/{id<\d+>}/view", name="import_detail")
      * @param ImportFilesRepository $importFilesRepository
      * @return Response
      */
@@ -340,5 +328,27 @@ class ImportController extends AbstractController
             $response = new JsonResponse ( $array, 400 );
             return $response;
         }
+    }
+
+    /**
+     * retourner toutes les lignes du fichier passé en argument
+     * @Route("api/import/datatable", name="datatableFilesUploaded")
+     * @param ImportFiles $importFile
+     */
+    public function dataTableFiles()
+    {
+        $repo = $this->getDoctrine()->getManager()->getRepository(ImportFiles::class);
+        return  $this->json($repo->findBy([], ["createdAt" => "DESC"]), 200, [], ['groups' => 'importFile:read']);
+    }
+
+    /**
+     * Retourner toutes les lignes du fichier passé en argument
+     * @Route("api/import/{id}/datatable", name="datatable")
+     * @param ImportFiles $importFile
+     */
+    public function dataTable(ImportFiles $importFile)
+    {
+        $repo = $this->getDoctrine()->getManager()->getRepository(DetailImport::class);
+        return  $this->json($repo->findBy(['importFile' => $importFile]), 200, [], ['groups' => 'detailImport:read']);
     }
 }

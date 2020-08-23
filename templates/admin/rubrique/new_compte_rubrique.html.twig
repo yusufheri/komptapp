@@ -1,0 +1,59 @@
+
+    <div class="modal-header">
+        <h3 class="modal-title h1" id="exampleModalLongTitle">Rubrique : <b>{{ rubrique.name }}</b> ( {{ rubrique.detailRubriques[0].amount|number_format(2,',',' ') ~" "~ rubrique.detailRubriques[0].devise.name}} )</h3>
+        <button class="btn blue-bgcolor btn-outline btn-circle m-b-10"> <i class="fa fa-close"  data-dismiss="modal" aria-label="Close"></i> </button>
+    </div>
+    <div class="modal-body ">
+        <div id="compte_rubrique">
+            <div id="message"></div>       
+            <form method="post" id="formRubriqueCompte" action="/admin/rubrique/create_compte/{{ rubrique.id }}">
+                <input type="hidden" name="token" value="{{ csrf_token('security') }}" />
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="simpleFormEmail">Sous rubrique</label>
+                            <select class="form-control js-example-basic-single" name="sous_rubrique"  placeholder="Sélectionnez la sous-rubrique">
+                                <option value="-1">Sélectionnez une sous-rubrique</option>
+                                <pre>
+                                    {{ dump(rubrique.sousRubriques) }}
+                                </pre>
+                                
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="simpleFormEmail">Comptes<span class="required" aria-required="true"> * </span></label>
+                            <select class="form-control js-example-basic-single" name="compte" placeholder="Sélectionnez le compte">
+                                <option value="-1">Sélectionnez un compte</option>
+                                {% for item in comptes %}
+                                    <option value="{{ item.id }}">{{ item.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="simpleFormEmail">Pour cenatge</label>
+                            <input type="decimal" class="form-control"  placeholder="Saisir le pourc centage" name="percent">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="simpleFormPassword">Montant<span class="required" aria-required="true"> * </span></label>
+                            <input type="integer" class="form-control"  placeholder="Saisir le montant" name="amount">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="">Description</label>
+                    <textarea name="content" id="content" class="form-control" rows="4" placeholder="Laisser un commentaire "></textarea>
+                </div>
+                <button type="button" class="btn btn-circle btn-default m-b-10" id="btnCancel" data-dismiss="modal"><i class="fa fa-trash"></i> Annuler</button>
+                <button type="submit" class="btn btn-circle btn-primary float-right m-b-10" id="btnSave"><i class="fa fa-check"></i> Enregistrer</button>
+            </form>
+        </div>
+    </div>

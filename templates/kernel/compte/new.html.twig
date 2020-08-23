@@ -1,0 +1,131 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Rubriques - Comptes::KomptApp{% endblock %}
+
+{% block stylesheets %}
+    <!-- google font -->
+	<link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" rel="stylesheet" type="text/css" />
+	<!-- icons -->
+	<link href="{{ asset('fonts/simple-line-icons/simple-line-icons.min.css') }}" rel="stylesheet" type="text/css" />
+	<link href="{{ asset('fonts/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css" />
+	<link href="{{ asset('fonts/material-design-icons/material-icon.css') }}" rel="stylesheet" type="text/css" />
+	<!--bootstrap -->
+	<link href="{{ asset('assets/plugins/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
+	<!-- Material Design Lite CSS -->
+	<link rel="stylesheet" href="{{ asset('assets/plugins/material/material.min.css') }}">
+	<link rel="stylesheet" href="{{ asset('assets/css/material_style.css') }}">
+	<!-- steps -->
+	<link rel="stylesheet" href="{{ asset('assets/plugins/steps/steps.css') }}">
+	<!-- Theme Styles -->
+	<link href="{{ asset('assets/css/theme/collapse/theme_style.css') }}" rel="stylesheet" id="rt_style_components" type="text/css" />
+	<link href="{{ asset('assets/css/theme/collapse/style.css') }}" rel="stylesheet" type="text/css" />
+	<link href="{{ asset('assets/css/plugins.min.css') }}" rel="stylesheet" type="text/css" />
+	<link href="{{ asset('assets/css/responsive.css') }}" rel="stylesheet" type="text/css" />
+	<link href="{{ asset('assets/css/theme/collapse/theme-color.css') }}" rel="stylesheet" type="text/css" />
+	<!-- favicon -->
+	<link rel="shortcut icon" href="{{ asset('assets/img/favicon.ico') }}" />
+{% endblock %}
+{% block body %}
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card-box">
+            <div class="card-head">
+                <header>wizard with validation</header>
+            </div>
+            <div class="card-body ">
+                <form id="example-advanced-form" action="#" role="application" class="wizard clearfix" novalidate="novalidate">
+                <div class="steps clearfix">
+                    <ul role="tablist">
+                        <li role="tab" class="first current" aria-disabled="false" aria-selected="true"><a id="example-advanced-form-t-0" href="#example-advanced-form-h-0" aria-controls="example-advanced-form-p-0"><span class="current-info audible">current step: </span><span class="number">1.</span> Informations générales</a></li>
+                        <li role="tab" class="done" aria-disabled="false" aria-selected="false"><a id="example-advanced-form-t-1" href="#example-advanced-form-h-1" aria-controls="example-advanced-form-p-1"><span class="number">2.</span> Sous-rubriques</a></li>
+                        <li role="tab" class="last done" aria-disabled="false" aria-selected="false"><a id="example-advanced-form-t-2" href="#example-advanced-form-h-2" aria-controls="example-advanced-form-p-2"><span class="number">3.</span> Comptes</a></li>
+                        <li role="tab" class="last done" aria-disabled="false" aria-selected="false"><a id="example-advanced-form-t-3" href="#example-advanced-form-h-3" aria-controls="example-advanced-form-p-3"><span class="number">4.</span> Enregistrement</a></li>
+                    </ul>
+                </div>
+                <div class="content clearfix">
+                    <h3 id="example-advanced-form-h-0" tabindex="-1" class="title current">Informations générales</h3>
+                    <fieldset id="example-advanced-form-p-0" role="tabpanel" aria-labelledby="example-advanced-form-h-0" class="body current" aria-hidden="false" style="left: 0px;">
+                        <div class="col-lg-12 p-t-20">
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label txt-full-width is-upgraded is-dirty" data-upgraded=",MaterialTextfield">
+                                <label id="username-error" class="error" for="username" style="display: none;"></label><input class="mdl-textfield__input valid" type="text" pattern="[A-Z,a-z]*" name="userName" id="username" required="" aria-required="true" aria-invalid="false">
+                                <label class="mdl-textfield__label" for="username">Username</label>
+                                <span class="mdl-textfield__error">Enter User Name!</span>
+                            </div>
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label txt-full-width is-upgraded is-dirty" data-upgraded=",MaterialTextfield">
+                                <label id="password-2-error" class="error" for="password-2" style="display: none;"></label><input class="mdl-textfield__input valid" type="password" id="password-2" name="password" required="" aria-required="true" aria-invalid="false">
+                                <label class="mdl-textfield__label" for="password-2">Password</label>
+                                <span class="mdl-textfield__error">Enter Valid Password!</span>
+                            </div>
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label txt-full-width is-upgraded is-dirty" data-upgraded=",MaterialTextfield">
+                                <label id="confirm-2-error" class="error" for="confirm-2" style="display: none;"></label><input class="mdl-textfield__input valid" type="password" id="confirm-2" name="confirm" required="" aria-required="true" aria-invalid="false">
+                                <label class="mdl-textfield__label" for="confirm">Confirm Password</label>
+                                <span class="mdl-textfield__error">Enter Valid Password!</span>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <h3 id="example-advanced-form-h-1" tabindex="-1" class="title">Sous-rubriques</h3>
+                    <fieldset id="example-advanced-form-p-1" role="tabpanel" aria-labelledby="example-advanced-form-h-1" class="body" aria-hidden="true" style="left: 1197px; display: none;">
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label txt-full-width is-upgraded is-dirty" data-upgraded=",MaterialTextfield">
+                            <input class="mdl-textfield__input valid" type="text" id="name-2" name="name" required="" aria-required="true" aria-invalid="false">
+                            <label class="mdl-textfield__label" for="name">First name *</label>
+                            <span class="mdl-textfield__error">Enter First Name!</span>
+                        </div>
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label txt-full-width is-upgraded is-dirty" data-upgraded=",MaterialTextfield">
+                            <input class="mdl-textfield__input valid" type="text" id="surname-2" name="surname" required="" aria-required="true" aria-invalid="false">
+                            <label class="mdl-textfield__label" for="surname">Last name *</label>
+                            <span class="mdl-textfield__error">Enter Last Name!</span>
+                        </div>
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label txt-full-width is-upgraded is-dirty" data-upgraded=",MaterialTextfield">
+                            <input class="mdl-textfield__input valid" type="email" id="email-2" name="email" required="" aria-required="true" aria-invalid="false">
+                            <label class="mdl-textfield__label" for="email">Email *</label>
+                            <span class="mdl-textfield__error">Enter Valid Email!</span>
+                        </div>
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label txt-full-width is-upgraded is-dirty" data-upgraded=",MaterialTextfield">
+                            <input class="mdl-textfield__input valid" type="number" id="age-2" name="age" required="" aria-required="true" aria-invalid="false">
+                            <label class="mdl-textfield__label" for="age">Age *</label>
+                            <span class="mdl-textfield__error">Enter Valid Age!</span>
+                        </div>
+                    </fieldset>
+                    <h3 id="example-advanced-form-h-2" tabindex="-1" class="title">Comptes</h3>
+                    <fieldset id="example-advanced-form-p-2" role="tabpanel" aria-labelledby="example-advanced-form-h-2" class="body" aria-hidden="true" style="left: 1197px; display: none;">
+                        <div class="col-lg-12 p-t-20">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-js-ripple-effect--ignore-events is-upgraded is-checked" for="checkbox-1" data-upgraded=",MaterialCheckbox,MaterialRipple">
+                                <input type="checkbox" id="checkbox-1" name="acceptTerms" class="mdl-checkbox__input valid" required="" aria-required="true">
+                                <span class="mdl-checkbox__label">I agree with the Terms and Conditions.</span>
+                            <span class="mdl-checkbox__focus-helper"></span><span class="mdl-checkbox__box-outline"><span class="mdl-checkbox__tick-outline"></span></span><span class="mdl-checkbox__ripple-container mdl-js-ripple-effect mdl-ripple--center" data-upgraded=",MaterialRipple"><span class="mdl-ripple is-animating" style="width: 103.823px; height: 103.823px; transform: translate(-50%, -50%) translate(18px, 18px);"></span></span></label>
+                        </div>
+                    </fieldset>
+                    <h3 id="example-advanced-form-h-3" tabindex="-1" class="title">Finish</h3>
+                    <fieldset id="example-advanced-form-p-3" role="tabpanel" aria-labelledby="example-advanced-form-h-3" class="body" aria-hidden="true" style="left: 1197px; display: none;">
+                        <div class="col-lg-12 p-t-20">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-js-ripple-effect--ignore-events is-upgraded is-checked" for="checkbox-1" data-upgraded=",MaterialCheckbox,MaterialRipple">
+                                <input type="checkbox" id="checkbox-1" name="acceptTerms" class="mdl-checkbox__input valid" required="" aria-required="true">
+                                <span class="mdl-checkbox__label">I agree with the Terms and Conditions.</span>
+                            <span class="mdl-checkbox__focus-helper"></span><span class="mdl-checkbox__box-outline"><span class="mdl-checkbox__tick-outline"></span></span><span class="mdl-checkbox__ripple-container mdl-js-ripple-effect mdl-ripple--center" data-upgraded=",MaterialRipple"><span class="mdl-ripple is-animating" style="width: 103.823px; height: 103.823px; transform: translate(-50%, -50%) translate(18px, 18px);"></span></span></label>
+                        </div>
+                    </fieldset>
+                </div><div class="actions clearfix"><ul role="menu" aria-label="Pagination"><li class="disabled" aria-disabled="true"><a href="#previous" role="menuitem">Previous</a></li><li aria-hidden="false" aria-disabled="false" class="" style=""><a href="#next" role="menuitem">Next</a></li><li aria-hidden="true" style="display: none;"><a href="#finish" role="menuitem">Finish</a></li></ul></div></form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- start js include path -->
+	<script src="{{ asset('assets/plugins/jquery/jquery.min.js') }}"></script>
+	<script src="{{ asset('assets/plugins/popper/popper.js') }}"></script>
+	<script src="{{ asset('assets/plugins/jquery-blockui/jquery.blockui.min.js') }}"></script>
+	<script src="{{ asset('assets/plugins/jquery-slimscroll/jquery.slimscroll.js') }}"></script>
+	<script src="{{ asset('assets/plugins/jquery-validation/js/jquery.validate.min.js') }}"></script>
+	<!-- bootstrap -->
+	<script src="{{ asset('assets/plugins/bootstrap/js/bootstrap.min.js') }}"></script>
+	<!-- steps -->
+	<script src="{{ asset('assets/plugins/steps/jquery.steps.js') }}"></script>
+	<script src="{{ asset('assets/js/pages/steps/steps-data.js') }}"></script>
+	<!-- Common js-->
+	<script src="{{ asset('assets/js/app.js') }}"></script>
+	<script src="{{ asset('assets/js/layout.js') }}"></script>
+	<script src="{{ asset('assets/js/theme-color.js') }}"></script>
+	<!-- Material -->
+	<script src="{{ asset('assets/plugins/material/material.min.js') }}"></script>
+	<!-- end js include path -->
+{% endblock %}
