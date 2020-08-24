@@ -2,13 +2,21 @@
 
 namespace App\Entity;
 
-use App\Repository\EnyCompteRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\EnyCompteRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=EnyCompteRepository::class)
+ * @ORM\HasLifecycleCallbacks()
+ * @UniqueEntity(
+ *      fields={"name"},
+ *     message="Il existe déjà un compte portant ce libelllé."
+ * 
+ * )
  */
 class EnyCompte
 {
@@ -16,26 +24,31 @@ class EnyCompte
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups("cpte:read")
      */
     private $id;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups("cpte:read")
      */
     private $createdAt;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups("cpte:read")
      */
     private $code;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
+     * @Groups("cpte:read")
      */
     private $name;
 
     /**
      * @ORM\Column(type="text", nullable=true)
+     * @Groups("cpte:read")
      */
     private $content;
 
@@ -52,6 +65,16 @@ class EnyCompte
     public function __construct()
     {
         $this->enyRubriqueCpts = new ArrayCollection();
+    }
+
+    /**
+     * @ORM\PrePersist
+     *
+     * @return void
+     */
+    public function setCreatedAtValue() {
+        $date = new \DateTime();
+        $this->createdAt = $date;       
     }
 
     public function getId(): ?int
