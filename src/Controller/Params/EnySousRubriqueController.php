@@ -2,11 +2,11 @@
 
 namespace App\Controller\Params;
 
-use App\Entity\Compte;
 use App\Entity\EnyCompte;
-use App\Form\EnyCompteType;
-use DateTime;
 use Psr\Log\LoggerInterface;
+use App\Entity\EnySousRubrique;
+use App\Entity\SousRubrique;
+use App\Form\EnySousRubriqueType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,32 +17,32 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
- * @Route("/admin/cpte/", name="admin_cpt") 
+ * @Route("/admin/srubrique/", name="admin_srubrique") 
  */
-class EnyCompteController extends AbstractController
+class EnySousRubriqueController extends AbstractController
 {
     /**
      * @Route("", name="_index")
      */
     public function index()
     {
-        return $this->render('params/eny_compte/index.html.twig', [
-            'controller_name' => 'EnyCompteController',
+        return $this->render('params/eny_sous_rubrique/index.html.twig', [
+            'controller_name' => 'EnySousRubriqueController',
         ]);
     }
 
     /**
      * @Route("create_form", name="_create_form")
      */
-    public function create(Request $request, EntityManagerInterface $manager)
+    public function create()
     {
-        $cpte = new EnyCompte();
-        $form = $this->createForm(EnyCompteType::class, $cpte);
+        $cpte = new EnySousRubrique();
+        $form = $this->createForm(EnySousRubriqueType::class, $cpte);
 
-        $form->handleRequest($request);
+        /*$form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()){
             return new Response("Success", 200);
-        }
+        }*/
 
         return $this->render("params/partials/new.html.twig", [
             "form" => $form->createView()
@@ -50,24 +50,24 @@ class EnyCompteController extends AbstractController
     }
 
     /**
-     * @Route("{id}/edit_form_cpte", name="_edit_form")
+     * @Route("{id}/edit_form", name="_edit_form")
      */
-    public function editForm(EnyCompte $cpte, Request $request, EntityManagerInterface $manager)
+    public function editForm(EnySousRubrique $obj, Request $request, EntityManagerInterface $manager)
     {
-        $form = $this->createForm(EnyCompteType::class, $cpte);
-
+        $form = $this->createForm(EnySousRubriqueType::class, $obj);
+        /*
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()){
-            $manager->persist($cpte);
+            $manager->persist($obj);
             $manager->flush();
-            return $this->redirectToRoute("admin_cpte_index");
-        }
+            return $this->redirectToRoute("admin_srubrique_index");
+        }*/
 
         if($request->isXmlHttpRequest()) 
         {
             return $this->render("params/partials/new.html.twig", [
                 "form" => $form->createView(),
-                'compte' => $cpte
+                'compte' => $obj
             ]);
         } else {
             return new Response("denied access !!!");
@@ -76,14 +76,14 @@ class EnyCompteController extends AbstractController
     }
 
     /**
-     * @Route("{id}/edit_cpte", name="_edit_cpte")
+     * @Route("{id}/edit_sous_rubrique", name="_edit_sous_rubrique")
      */
-    public function edit(EnyCompte $enyCompte,Request $request, ValidatorInterface $validator, LoggerInterface $logger, EntityManagerInterface $manager): Response
+    public function editSousRubrique(Request $request, EnySousRubrique $obj, ValidatorInterface $validator, LoggerInterface $logger, EntityManagerInterface $manager): Response
     {
-        
+        //dd($request);
         if($request->isXmlHttpRequest()) {
             
-            $eny_compte = $request->request->get('eny_compte');
+            $eny_compte = $request->request->get('eny_sous_rubrique');
             $token =$eny_compte["_token"];
             $code = $eny_compte["code"];
             $name = $eny_compte["name"];
@@ -113,15 +113,15 @@ class EnyCompteController extends AbstractController
                 return $this->render('partials/forms/violations.html.twig',
                     ['errorMessages' => $errorMessages]);
             } else {
-
-                $enyCompte->setCode($code);
-                $enyCompte->setName($name);
-                $enyCompte->setContent($content);
+                
+                $obj->setCode($code);
+                $obj->setName($name);
+                $obj->setContent($content);
                 //dd($enyCompte);
-                $manager->persist($enyCompte);
+                $manager->persist($obj);
                 $manager->flush();
 
-                return new Response("Le compte a été modifié avec succès", Response::HTTP_OK,
+                return new Response("La sous rubrique a été modifiée avec succès", Response::HTTP_OK,
                     ['content-type' => 'text/plain']);
             }
 
@@ -140,7 +140,7 @@ class EnyCompteController extends AbstractController
         
         if($request->isXmlHttpRequest()) {
             
-            $eny_compte = $request->request->get('eny_compte');
+            $eny_compte = $request->request->get('eny_sous_rubrique');
             $token =$eny_compte["_token"];
             $code = $eny_compte["code"];
             $name = $eny_compte["name"];
@@ -170,7 +170,7 @@ class EnyCompteController extends AbstractController
                 return $this->render('partials/forms/violations.html.twig',
                     ['errorMessages' => $errorMessages]);
             } else {
-                $compte = new EnyCompte();
+                $compte = new EnySousRubrique();
                 $compte->setCode($code);
                 $compte->setName($name);
                 $compte->setContent($content);
@@ -179,7 +179,7 @@ class EnyCompteController extends AbstractController
                 $manager->persist($compte);
                 $manager->flush();
 
-                return new Response("Le nouveau compte a été créé avec succès", Response::HTTP_OK,
+                return new Response("La nouvelle sous rubrique a été créée avec succès", Response::HTTP_OK,
                     ['content-type' => 'text/plain']);
             }
 
@@ -191,18 +191,18 @@ class EnyCompteController extends AbstractController
     }
 
     /**
-     * @Route("{id}/delete", name="_delete")
+     * @Route("{id}/delete", name="_edit")
      */
-    public function delete(EnyCompte $enyCompte,Request $request, ValidatorInterface $validator, LoggerInterface $logger, EntityManagerInterface $manager): Response
+    public function delete(EnySousRubrique $enyCompte,Request $request, ValidatorInterface $validator, LoggerInterface $logger, EntityManagerInterface $manager): Response
     {
         
         if($request->isXmlHttpRequest()) {
-
-                $enyCompte->setDeletedAt(new DateTime());
+            
+                $enyCompte->setDeletedAt(new \DateTime());
                 $manager->persist($enyCompte);
                 $manager->flush();
 
-                return new Response("Le compte a été supprimé avec succès", Response::HTTP_OK,
+                return new Response("La sous rubrique a été supprimée avec succès", Response::HTTP_OK,
                     ['content-type' => 'text/plain']);
 
         } else {
@@ -219,7 +219,7 @@ class EnyCompteController extends AbstractController
      */
     public function datatable()
     {
-        $repo = $this->getDoctrine()->getManager()->getRepository(EnyCompte::class);
+        $repo = $this->getDoctrine()->getManager()->getRepository(EnySousRubrique::class);
         return  $this->json($repo->findBy(["deletedAt" => null], ["createdAt" => "DESC",]), 200, [], ['groups' => 'cpte:read']);
     }
 }

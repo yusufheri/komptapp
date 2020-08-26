@@ -3,12 +3,20 @@
 namespace App\Entity;
 
 use App\Repository\EnySousRubriqueRepository;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=EnySousRubriqueRepository::class)
+ * @ORM\HasLifecycleCallbacks()
+ * *@UniqueEntity(
+ *      fields={"name"},
+ *     message="Il existe déjà une sous rubrique portant ce libelllé."
+ * 
+ * )
  */
 class EnySousRubrique
 {
@@ -16,31 +24,37 @@ class EnySousRubrique
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups("cpte:read")
      */
     private $id;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups("cpte:read")
      */
     private $createdAt;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     * @Groups("cpte:read")
      */
     private $deletedAt;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups("cpte:read")
      */
     private $code;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
+     * @Groups("cpte:read")
      */
     private $name;
 
     /**
      * @ORM\Column(type="text", nullable=true)
+     * @Groups("cpte:read")
      */
     private $content;
 
@@ -52,6 +66,16 @@ class EnySousRubrique
     public function __construct()
     {
         $this->enyRubriques = new ArrayCollection();
+    }
+
+    /**
+     * @ORM\PrePersist
+     *
+     * @return void
+     */
+    public function setCreatedAtValue() {
+        $date = new \DateTime();
+        $this->createdAt = $date;       
     }
 
     public function getId(): ?int

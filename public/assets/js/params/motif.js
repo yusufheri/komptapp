@@ -1,7 +1,7 @@
 
 $(document).ready(function(){  
     
-    function datatable(url = "/admin/cpte/api"){
+    function datatable(url = "/admin/motif/api"){
         $('#datatable').notify("Chargement des données en cours ...", {className: "info", position:"t c" });
         var baseurl = url;
         var xmlhttp = new XMLHttpRequest();
@@ -45,8 +45,8 @@ $(document).ready(function(){
                         {"title": "Créé", "data": null, render: function(data, type, row) {
                             return "<center>" + moment(row.createdAt).format('DD-MM-YYYY H:m').toString() + "</center>"
                         }},
-                        {"title": "Code", "data": "code"},
                         {"title": "Libellé", "data": "name"},
+                        {"title": "Description", "data": "content"},
                         {"title": "", "data": null}
                     ],
                     columnDefs: [
@@ -87,7 +87,7 @@ $(document).ready(function(){
                     try {
                         console.log("Début du proccess..")
                         $.ajax({
-                            url:"/admin/cpte/"+ data.id.toString() +"/edit_form_cpte",
+                            url:"/admin/motif/"+ data.id.toString() +"/edit_form_motif",
                             method:"POST",
                             type:"POST",
                             beforeSend:function(){
@@ -99,7 +99,7 @@ $(document).ready(function(){
                             }, error: function(error){
                                 $(".modalCompte").html(error)
                             }, complete:function(){
-                                $("#header").html("<header>Modification du compte</header>")
+                                $("#header").html("<header>Modification du <b>Motif</b></header>")
                                 $("#btnSave").html('<i class="fa fa-check"></i> Modifier')
                             }
                 
@@ -116,17 +116,17 @@ $(document).ready(function(){
                     e.preventDefault();
                     var data = table.row($(this).parents('tr')).data();
                     try {
-                        if (confirm('Voulez-vous supprimer ce compte ?')) 
+                        if (confirm('Voulez-vous supprimer ce motif ?')) 
                         {
                             $.ajax({
                                 method:"POST",
                                 type:"POST",
-                                url:"/admin/cpte/"+data.id.toString() + "/delete",
+                                url:"/admin/motif/"+data.id.toString() + "/delete",
                                 beforeSend: function(){
                                     $('#example').notify("Suppression en cours...", {className: "info", position:"t c" });
                                     //button.fadeOut(3000).fadeIn(3000);
                                 }, success: function(data) {
-                                    console.log(data)
+                                    //console.log(data)
                                     $('#example').notify("Suppression réussie avec succès...", {className: "success", position:"t c" });
                                     //location.reload()
                                     datatable()
@@ -162,7 +162,7 @@ $(document).ready(function(){
 
     $("#addCpte").on('click', function(){
         $.ajax({
-            url:"/admin/cpte/create_form",
+            url:"/admin/motif/create_form",
             method:"POST",
             type:"POST",
             beforeSend:function(){
@@ -184,12 +184,12 @@ $(document).ready(function(){
         e.preventDefault();
         var type = $(this).attr('id');
         var id = $("input[name='id']").val();
-        var url = (type == "create")?"/admin/cpte/new":"/admin/cpte/"+ id.toString() +"/edit_cpte"
+        var url = (type == "create")?"/admin/motif/new":"/admin/motif/"+ id.toString() +"/edit"
         $.ajax({
             url: url,
             type: 'POST',
             method: 'POST',
-            data: $("form[name='eny_compte']").serialize(),
+            data: $("form[name='eny_motif']").serialize(),
             beforeSend : function(){
                 $('#FormCompte').notify("Enregistrement en cours ...", {className: "info", position:"t c" });
                 $("#btnSave").addClass('disabled')
@@ -208,7 +208,8 @@ $(document).ready(function(){
                 }
                             
             }, error : function(error) {
-                $('#infoBox').notify(error, {className: "error", position:"t c" });
+                //console.error(error.responseText);
+                $('#infoBox').notify("Une erreur est survenue lors de la création du motif " , {className: "error", position:"t c" });
             }, complete: function() {
                 $("#btnSave").removeClass('disabled')
                 $("#btnCancel").removeClass('disabled')

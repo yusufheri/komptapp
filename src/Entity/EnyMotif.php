@@ -3,10 +3,18 @@
 namespace App\Entity;
 
 use App\Repository\EnyMotifRepository;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=EnyMotifRepository::class)
+ * @ORM\HasLifecycleCallbacks()
+ * @UniqueEntity(
+ *      fields={"name"},
+ *     message="Il existe déjà un motif portant ce libelllé."
+ * 
+ * )
  */
 class EnyMotif
 {
@@ -14,31 +22,37 @@ class EnyMotif
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups("motif:read")
      */
     private $id;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups("motif:read")
      */
     private $createdAt;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     * @Groups("motif:read")
      */
     private $updatedAt;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
+     * @Groups("motif:read")
      */
     private $name;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     * @Groups("motif:read")
      */
     private $deletedAt;
 
     /**
      * @ORM\Column(type="text", nullable=true)
+     * @Groups("motif:read")
      */
     private $content;
 
@@ -46,6 +60,16 @@ class EnyMotif
      * @ORM\Column(type="integer", nullable=true)
      */
     private $idDetailRubrique;
+
+    /**
+     * @ORM\PrePersist
+     *
+     * @return void
+     */
+    public function setCreatedAtValue() {
+        $date = new \DateTime();
+        $this->createdAt = $date;       
+    }
 
     public function getId(): ?int
     {
