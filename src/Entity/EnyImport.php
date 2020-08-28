@@ -75,9 +75,15 @@ class EnyImport
      */
     private $enyDetailImports;
 
+    /**
+     * @ORM\OneToMany(targetEntity=EnyMvt::class, mappedBy="import")
+     */
+    private $enyMvts;
+
     public function __construct()
     {
         $this->enyDetailImports = new ArrayCollection();
+        $this->enyMvts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -230,6 +236,37 @@ class EnyImport
             // set the owning side to null (unless already changed)
             if ($enyDetailImport->getEnyImport() === $this) {
                 $enyDetailImport->setEnyImport(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|EnyMvt[]
+     */
+    public function getEnyMvts(): Collection
+    {
+        return $this->enyMvts;
+    }
+
+    public function addEnyMvt(EnyMvt $enyMvt): self
+    {
+        if (!$this->enyMvts->contains($enyMvt)) {
+            $this->enyMvts[] = $enyMvt;
+            $enyMvt->setImport($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEnyMvt(EnyMvt $enyMvt): self
+    {
+        if ($this->enyMvts->contains($enyMvt)) {
+            $this->enyMvts->removeElement($enyMvt);
+            // set the owning side to null (unless already changed)
+            if ($enyMvt->getImport() === $this) {
+                $enyMvt->setImport(null);
             }
         }
 

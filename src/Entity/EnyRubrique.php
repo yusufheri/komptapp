@@ -93,6 +93,11 @@ class EnyRubrique
     private $premier;
     private $deuxieme;
 
+    /**
+     * @ORM\OneToMany(targetEntity=EnyMvt::class, mappedBy="rubrique")
+     */
+    private $enyMvts;
+
 
 
     public function __construct()
@@ -103,7 +108,8 @@ class EnyRubrique
         $this->enyDetailImports = new ArrayCollection();
         $this->enyMotifs = new ArrayCollection();
         //$this->devise = new ArrayCollection();
-        
+
+        $this->enyMvts = new ArrayCollection();        
     }
 
     /**
@@ -425,5 +431,36 @@ class EnyRubrique
     {
         $detail = $this->enyDetailRubriques->last();
         return $detail->getAmount()." ".$detail->getDevise()->getName();
+    }
+
+    /**
+     * @return Collection|EnyMvt[]
+     */
+    public function getEnyMvts(): Collection
+    {
+        return $this->enyMvts;
+    }
+
+    public function addEnyMvt(EnyMvt $enyMvt): self
+    {
+        if (!$this->enyMvts->contains($enyMvt)) {
+            $this->enyMvts[] = $enyMvt;
+            $enyMvt->setRubrique($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEnyMvt(EnyMvt $enyMvt): self
+    {
+        if ($this->enyMvts->contains($enyMvt)) {
+            $this->enyMvts->removeElement($enyMvt);
+            // set the owning side to null (unless already changed)
+            if ($enyMvt->getRubrique() === $this) {
+                $enyMvt->setRubrique(null);
+            }
+        }
+
+        return $this;
     }
 }

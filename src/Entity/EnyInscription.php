@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\EnyInscriptionRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -74,6 +76,16 @@ class EnyInscription
      * @ORM\Column(type="string", length=50, nullable=true)
      */
     private $s2;
+
+    /**
+     * @ORM\OneToMany(targetEntity=EnyMvt::class, mappedBy="student")
+     */
+    private $enyMvts;
+
+    public function __construct()
+    {
+        $this->enyMvts = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -208,6 +220,37 @@ class EnyInscription
     public function setS2(?string $s2): self
     {
         $this->s2 = $s2;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|EnyMvt[]
+     */
+    public function getEnyMvts(): Collection
+    {
+        return $this->enyMvts;
+    }
+
+    public function addEnyMvt(EnyMvt $enyMvt): self
+    {
+        if (!$this->enyMvts->contains($enyMvt)) {
+            $this->enyMvts[] = $enyMvt;
+            $enyMvt->setStudent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEnyMvt(EnyMvt $enyMvt): self
+    {
+        if ($this->enyMvts->contains($enyMvt)) {
+            $this->enyMvts->removeElement($enyMvt);
+            // set the owning side to null (unless already changed)
+            if ($enyMvt->getStudent() === $this) {
+                $enyMvt->setStudent(null);
+            }
+        }
 
         return $this;
     }

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\EnyRubriqueCptRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -79,6 +81,22 @@ class EnyRubriqueCpt
      * @Groups("rubrique:read")
      */
     private $devise;
+
+    /**
+     * @ORM\OneToMany(targetEntity=EnyMvt::class, mappedBy="compte")
+     */
+    private $enyMvts;
+
+    /**
+     * @ORM\OneToMany(targetEntity=EnyDispatch::class, mappedBy="compte")
+     */
+    private $enyDispatches;
+
+    public function __construct()
+    {
+        $this->enyMvts = new ArrayCollection();
+        $this->enyDispatches = new ArrayCollection();
+    }
 
     /**
      * @ORM\PrePersist
@@ -221,6 +239,68 @@ class EnyRubriqueCpt
             if($obj->getId() == $this->srubrique) return $obj->getName();
         }
         return $this->srubrique;
+    }
+
+    /**
+     * @return Collection|EnyMvt[]
+     */
+    public function getEnyMvts(): Collection
+    {
+        return $this->enyMvts;
+    }
+
+    public function addEnyMvt(EnyMvt $enyMvt): self
+    {
+        if (!$this->enyMvts->contains($enyMvt)) {
+            $this->enyMvts[] = $enyMvt;
+            $enyMvt->setCompte($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEnyMvt(EnyMvt $enyMvt): self
+    {
+        if ($this->enyMvts->contains($enyMvt)) {
+            $this->enyMvts->removeElement($enyMvt);
+            // set the owning side to null (unless already changed)
+            if ($enyMvt->getCompte() === $this) {
+                $enyMvt->setCompte(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|EnyDispatch[]
+     */
+    public function getEnyDispatches(): Collection
+    {
+        return $this->enyDispatches;
+    }
+
+    public function addEnyDispatch(EnyDispatch $enyDispatch): self
+    {
+        if (!$this->enyDispatches->contains($enyDispatch)) {
+            $this->enyDispatches[] = $enyDispatch;
+            $enyDispatch->setCompte($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEnyDispatch(EnyDispatch $enyDispatch): self
+    {
+        if ($this->enyDispatches->contains($enyDispatch)) {
+            $this->enyDispatches->removeElement($enyDispatch);
+            // set the owning side to null (unless already changed)
+            if ($enyDispatch->getCompte() === $this) {
+                $enyDispatch->setCompte(null);
+            }
+        }
+
+        return $this;
     }
 
 }
