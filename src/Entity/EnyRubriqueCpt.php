@@ -3,10 +3,12 @@
 namespace App\Entity;
 
 use App\Repository\EnyRubriqueCptRepository;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=EnyRubriqueCptRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  */
 class EnyRubriqueCpt
 {
@@ -14,11 +16,13 @@ class EnyRubriqueCpt
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups("rubrique:read")
      */
     private $id;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups("rubrique:read")
      */
     private $createdAt;
 
@@ -34,18 +38,23 @@ class EnyRubriqueCpt
 
     /**
      * @ORM\Column(type="float", nullable=true)
+     * @Groups("rubrique:read")
      */
     private $percent;
 
     /**
      * @ORM\Column(type="float")
+     * @Groups("rubrique:read")
      */
     private $amount;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups("rubrique:read")
      */
     private $srubrique;
+
+    private $nameSrubrique;
 
     /**
      * @ORM\Column(type="text", nullable=true)
@@ -67,8 +76,19 @@ class EnyRubriqueCpt
     /**
      * @ORM\ManyToOne(targetEntity=Devise::class, inversedBy="enyRubriqueCpts")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups("rubrique:read")
      */
     private $devise;
+
+    /**
+     * @ORM\PrePersist
+     *
+     * @return void
+     */
+    public function setCreatedAtValue() {
+        $date = new \DateTime();
+        $this->createdAt = $date;       
+    }
 
     public function getId(): ?int
     {
@@ -194,4 +214,13 @@ class EnyRubriqueCpt
 
         return $this;
     }
+
+    public function getNameSrubrique()
+    {
+        foreach($this->rubrique->getSousRubriques() as $key => $obj){
+            if($obj->getId() == $this->srubrique) return $obj->getName();
+        }
+        return $this->srubrique;
+    }
+
 }

@@ -2,13 +2,21 @@
 
 namespace App\Entity;
 
-use App\Repository\EnyRubriqueRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\EnyRubriqueRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=EnyRubriqueRepository::class)
+ * @ORM\HasLifecycleCallbacks()
+ * @UniqueEntity(
+ *      fields={"name"},
+ *     message="Il existe déjà une rubrique portant ce libellé."
+ * 
+ * )
  */
 class EnyRubrique
 {
@@ -16,46 +24,55 @@ class EnyRubrique
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups("rubrique:read")
      */
     private $id;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups("rubrique:read")
      */
     private $createdAt;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups("rubrique:read")
      */
     private $code;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
+     * @Groups("rubrique:read")
      */
     private $name;
 
     /**
      * @ORM\Column(type="text", nullable=true)
+     * @Groups("rubrique:read")
      */
     private $content;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     * @Groups("rubrique:read")
      */
     private $deletedAt;
 
     /**
      * @ORM\OneToMany(targetEntity=EnyRubriqueCpt::class, mappedBy="rubrique")
+     * @Groups("rubrique:read")
      */
     private $enyRubriqueCpts;
 
     /**
      * @ORM\ManyToMany(targetEntity=EnySousRubrique::class, inversedBy="enyRubriques")
+     * @Groups("rubrique:read")
      */
     private $sousRubriques;
 
     /**
      * @ORM\OneToMany(targetEntity=EnyDetailRubrique::class, mappedBy="rubrique")
+     * @Groups("rubrique:read")
      */
     private $enyDetailRubriques;
 
@@ -64,12 +81,39 @@ class EnyRubrique
      */
     private $enyDetailImports;
 
+    /**
+     * @ORM\OneToMany(targetEntity=EnyMotif::class, mappedBy="rubrique", cascade={"persist"})
+     * @Groups("rubrique:read")
+     */
+    private $enyMotifs;
+
+    
+    private $devise;
+    private $amount;
+    private $premier;
+    private $deuxieme;
+
+
+
     public function __construct()
     {
         $this->enyRubriqueCpts = new ArrayCollection();
         $this->sousRubriques = new ArrayCollection();
         $this->enyDetailRubriques = new ArrayCollection();
         $this->enyDetailImports = new ArrayCollection();
+        $this->enyMotifs = new ArrayCollection();
+        //$this->devise = new ArrayCollection();
+        
+    }
+
+    /**
+     * @ORM\PrePersist
+     *
+     * @return void
+     */
+    public function setCreatedAtValue() {
+        $date = new \DateTime();
+        $this->createdAt = $date;       
     }
 
     public function getId(): ?int
@@ -254,5 +298,132 @@ class EnyRubrique
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection|EnyMotif[]
+     */
+    public function getEnyMotifs(): Collection
+    {
+        return $this->enyMotifs;
+    }
+
+    public function addEnyMotif(EnyMotif $enyMotif): self
+    {
+        if (!$this->enyMotifs->contains($enyMotif)) {
+            $this->enyMotifs[] = $enyMotif;
+            $enyMotif->setRubrique($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEnyMotif(EnyMotif $enyMotif): self
+    {
+        if ($this->enyMotifs->contains($enyMotif)) {
+            $this->enyMotifs->removeElement($enyMotif);
+            // set the owning side to null (unless already changed)
+            if ($enyMotif->getRubrique() === $this) {
+                $enyMotif->setRubrique(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Get the value of devise
+     */ 
+    public function getDevise()
+    {
+        return $this->devise;
+    }
+
+    /**
+     * Set the value of devise
+     *
+     * @return  self
+     */ 
+    public function setDevise($devise)
+    {
+        $this->devise = $devise;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of amount
+     */ 
+    public function getAmount()
+    {
+        return $this->amount;
+    }
+
+    /**
+     * Set the value of amount
+     *
+     * @return  self
+     */ 
+    public function setAmount($amount)
+    {
+        $this->amount = $amount;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of premier
+     */ 
+    public function getPremier()
+    {
+        return $this->premier;
+    }
+
+    /**
+     * Set the value of premier
+     *
+     * @return  self
+     */ 
+    public function setPremier($premier)
+    {
+        $this->premier = $premier;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of deuxieme
+     */ 
+    public function getDeuxieme()
+    {
+        return $this->deuxieme;
+    }
+
+    /**
+     * Set the value of deuxieme
+     *
+     * @return  self
+     */ 
+    public function setDeuxieme($deuxieme)
+    {
+        $this->deuxieme = $deuxieme;
+
+        return $this;
+    }
+
+    public function getLastDetailsRubrique()
+    {
+        return $this->enyDetailRubriques->last();
+    }
+
+    public function MayBeAddRubriqueCompte(EnyRubriqueCpt $rubriqueCompte) 
+    {
+        return $this->enyRubriqueCpts->contains($rubriqueCompte);
+    }
+
+    public function getDetailAmountRubrique()
+    {
+        $detail = $this->enyDetailRubriques->last();
+        return $detail->getAmount()." ".$detail->getDevise()->getName();
     }
 }

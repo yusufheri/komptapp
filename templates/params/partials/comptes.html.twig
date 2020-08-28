@@ -1,0 +1,11 @@
+{% set devise = rubrique.detailRubriques[0].devise.name %}
+<div class="modal-header">
+    <h3 class="modal-title h1" id="exampleModalLongTitleViewCompte">
+        <span class="txt-info">{{ rubrique.name }}  ( répartie à  {{ rubrique.rubriqueComptes | length }}  comptes) : </span>
+        <b>{{rubrique.detailRubriques[0].amount | number_format(2,',','.') ~' '~ devise}}</b>
+    </h3>
+    <button class="btn blue-bgcolor btn-outline btn-circle m-b-10"> <i class="fa fa-close"  data-dismiss="modal" aria-label="Close"></i> </button>
+</div>
+<div class="modal-body">   
+    {% include "params/rubriques/partials/_comptes.html.twig" with {rubrique: rubrique} %}
+</div>

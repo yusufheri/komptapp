@@ -3,10 +3,12 @@
 namespace App\Entity;
 
 use App\Repository\EnyDetailRubriqueRepository;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=EnyDetailRubriqueRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  */
 class EnyDetailRubrique
 {
@@ -14,11 +16,13 @@ class EnyDetailRubrique
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups("rubrique:read")
      */
     private $id;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups("rubrique:read")
      */
     private $createdAt;
 
@@ -29,22 +33,26 @@ class EnyDetailRubrique
 
     /**
      * @ORM\Column(type="float", nullable=true)
+     * @Groups("rubrique:read")
      */
     private $amount;
 
     /**
      * @ORM\Column(type="float", nullable=true)
+     * @Groups("rubrique:read")
      */
     private $tranche_one;
 
     /**
      * @ORM\Column(type="float", nullable=true)
+     * @Groups("rubrique:read")
      */
     private $tranche_two;
 
     /**
      * @ORM\ManyToOne(targetEntity=Devise::class, inversedBy="enyDetailRubriques")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups("rubrique:read")
      */
     private $devise;
 
@@ -53,6 +61,17 @@ class EnyDetailRubrique
      * @ORM\JoinColumn(nullable=false)
      */
     private $rubrique;
+
+    /**
+     * @ORM\PrePersist
+     *
+     * @return void
+     */
+    public function setCreatedAtValue() {
+        $date = new \DateTime();
+        $this->createdAt = $date;       
+    }
+
 
     public function getId(): ?int
     {

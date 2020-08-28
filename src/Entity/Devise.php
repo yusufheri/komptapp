@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\DeviseRepository;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -21,6 +22,7 @@ class Devise
      * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @Groups("rubrique:read")
      */
     private $id;
 
@@ -28,6 +30,7 @@ class Devise
      * @var \DateTime
      *
      * @ORM\Column(name="created_at", type="datetime", nullable=false)
+     * @Groups("rubrique:read")
      */
     private $createdAt;
 
@@ -42,6 +45,7 @@ class Devise
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255, nullable=false)
+     * @Groups("rubrique:read")
      */
     private $name;
 
@@ -49,6 +53,7 @@ class Devise
      * @var string|null
      *
      * @ORM\Column(name="description", type="text", length=0, nullable=true)
+     * @Groups("rubrique:read")
      */
     private $description;
 

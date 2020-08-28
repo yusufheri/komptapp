@@ -23,12 +23,14 @@ class EnyMotif
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      * @Groups("motif:read")
+     * @Groups("rubrique:read")
      */
     private $id;
 
     /**
      * @ORM\Column(type="datetime")
      * @Groups("motif:read")
+     * @Groups("rubrique:read")
      */
     private $createdAt;
 
@@ -41,6 +43,7 @@ class EnyMotif
     /**
      * @ORM\Column(type="string", length=255, unique=true)
      * @Groups("motif:read")
+     * @Groups("rubrique:read")
      */
     private $name;
 
@@ -53,13 +56,20 @@ class EnyMotif
     /**
      * @ORM\Column(type="text", nullable=true)
      * @Groups("motif:read")
+     * @Groups("rubrique:read")
      */
     private $content;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups("rubrique:read")
      */
     private $idDetailRubrique;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=EnyRubrique::class, inversedBy="enyMotifs")
+     */
+    private $rubrique;
 
     /**
      * @ORM\PrePersist
@@ -144,6 +154,18 @@ class EnyMotif
     public function setIdDetailRubrique(?int $idDetailRubrique): self
     {
         $this->idDetailRubrique = $idDetailRubrique;
+
+        return $this;
+    }
+
+    public function getRubrique(): ?EnyRubrique
+    {
+        return $this->rubrique;
+    }
+
+    public function setRubrique(?EnyRubrique $rubrique): self
+    {
+        $this->rubrique = $rubrique;
 
         return $this;
     }

@@ -25,30 +25,35 @@ class EnyCompte
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      * @Groups("cpte:read")
+     * @Groups("rubrique:read")
      */
     private $id;
 
     /**
      * @ORM\Column(type="datetime")
      * @Groups("cpte:read")
+     * @Groups("rubrique:read")
      */
     private $createdAt;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Groups("cpte:read")
+     * @Groups("rubrique:read")
      */
     private $code;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
      * @Groups("cpte:read")
+     * @Groups("rubrique:read")
      */
     private $name;
 
     /**
      * @ORM\Column(type="text", nullable=true)
      * @Groups("cpte:read")
+     * @Groups("rubrique:read")
      */
     private $content;
 

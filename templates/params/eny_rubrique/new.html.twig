@@ -1,0 +1,146 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello EnyRubriqueController!{% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('assets/plugins/steps/steps.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet"/>
+{% endblock %}
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+    .select2-container {
+        max-width: 400px;
+    }
+</style>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card-box">
+            <div class="card-head">
+                <header>Création d'une rubrique</header>
+            </div>
+            <div class="card-body alert alert-primary">
+                {{ form_start(form, {'attr': {'id': 'example-form'}}) }}
+                    <div>
+                        <h3>Informations générales</h3>
+                        <section>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        {{ form_row(form.code) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        {{ form_row(form.name) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        {{ form_row(form.devise) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        {{ form_row(form.amount) }}
+                                    </div>
+                                </div>                                
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        {{ form_row(form.premier) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        {{ form_row(form.deuxieme) }}
+                                    </div>                                
+                                </div>
+                            </div>
+
+                                                                        
+                            <p class="text-danger">(*) Champs obligatoires</p>
+                        </section>
+                        <h3>Sous Rubriques</h3>
+                        <section>
+                            <div class="form-group">
+                                {{ form_row(form.sousRubriques) }}
+                            </div>
+                            <p class="text-danger">(*) Champs obligatoires</p>
+                        </section>
+                        <h3>Motifs</h3>
+                        <section>
+                            <br>
+                            <div class="alert alert-info">
+                                <p>Il s'agit des différents libellés provenant des extraits de paiement à la banque.</p>
+                            </div>
+                            <div class="form-group">
+                                {{ form_row(form.enyMotifs) }}
+                            </div>
+
+                            
+                        </section>
+                        
+                        <h3>Enregistrement</h3>
+                        <section>
+                            <div class="form-group">
+                                {{ form_row(form.content) }}
+                            </div>   
+                            <input id="acceptTerms" name="acceptTerms" type="checkbox" class="required"> <label for="acceptTerms">J'approuve que les informations fournies sont correctes.</label>
+                            
+                        </section>
+                    </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block javascripts %}
+<!-- steep -->
+<script src="{{ asset('assets/js/jquery.validate.min.js') }}"></script>
+<script src="{{ asset('assets/js/jquery.steps.min.js') }}"></script>
+
+<script>
+    jQuery(document).ready(function(){
+        var form = $("#example-form");
+
+        form.validate({
+            errorPlacement: function errorPlacement(error, element) { element.before(error); },
+            rules: {
+                confirm: {
+                    equalTo: "#password"
+                }
+            }
+        });
+
+        form.children("div").steps({
+            headerTag: "h3",
+            bodyTag: "section",
+            transitionEffect: "slideLeft",
+            onStepChanging: function (event, currentIndex, newIndex)
+            {
+                form.validate().settings.ignore = ":disabled,:hidden";
+                return form.valid();
+            },
+            onFinishing: function (event, currentIndex)
+            {
+                form.validate().settings.ignore = ":disabled";
+                return form.valid();
+            },
+            onFinished: function (event, currentIndex)
+            {
+                //event.preventDefault()
+                //console.log($("form[name = 'eny_rubrique']").serialize())
+                $("form[name = 'eny_rubrique']").submit()
+            }
+        });
+    })
+</script>
+{% endblock %}
