@@ -20,7 +20,7 @@ class EnyInscription
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=EnypromoOrganisee::class, inversedBy="enyInscriptions")
+     * @ORM\ManyToOne(targetEntity=EnyPromoOrganisee::class, inversedBy="enyInscriptions")
      * @ORM\JoinColumn(nullable=false)
      */
     private $num_eny_promo_organisee;

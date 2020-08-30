@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}EnyBankingInfo{% endblock %}
+
+{% block body %}
+    <h1>Mon compte #{{ eny_banking_info.id }}</h1>
+
+    <table class="table table-hover">
+        <tbody>
+            <tr>
+                <th>Enregistré</th>
+                <td>{{ eny_banking_info.createdAt ? eny_banking_info.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Nom du compte</th>
+                <td>{{ eny_banking_info.accountName }}</td>
+            </tr>
+            <tr>
+                <th>N° compte bancaire</th>
+                <td>{{ eny_banking_info.accountNumber }}</td>
+            </tr>
+            <tr>
+                <th>Banque</th>
+                <td>{{ eny_banking_info.bank.name | capitalize }}</td>
+            </tr>
+            <tr>
+                <th>Commentaire</th>
+                <td>{{ eny_banking_info.content }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('eny_banking_info_index') }}" class="btn btn-outline-primary float-right"><i class="fa fa-eye"></i> Voir la liste</a>
+
+    <a href="{{ path('eny_banking_info_edit', {'id': eny_banking_info.id}) }}" class="btn btn-outline-primary" ><i class="fa fa-edit"></i> Modifier</a><br>
+
+    {{ include('eny_banking_info/_delete_form.html.twig') }}
+{% endblock %}

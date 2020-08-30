@@ -4,11 +4,18 @@ namespace App\Entity;
 
 use App\Repository\EnyBankingInfoRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=EnyBankingInfoRepository::class)
+ * @ORM\HasLifecycleCallbacks()
+ * @UniqueEntity(
+ *      fields={"account_number"},
+ *     message="Il existe déjà un numéro de compte pareil dans la base de données."
+ * 
+ * )
  */
 class EnyBankingInfo
 {
@@ -30,7 +37,7 @@ class EnyBankingInfo
     private $account_name;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
      */
     private $account_number;
 
@@ -53,6 +60,16 @@ class EnyBankingInfo
     public function __construct()
     {
         $this->enyImports = new ArrayCollection();
+    }
+
+    /**
+     * @ORM\PrePersist
+     *
+     * @return void
+     */
+    public function setCreatedAtValue() {
+        $date = new \DateTime();
+        $this->createdAt = $date;       
     }
 
     public function getId(): ?int

@@ -758,4 +758,9 @@ class EnyEtudiant
 
         return $this;
     }
+
+    public function getNames():?string
+    {
+        return $this->nom." ".$this->postnom." ".$this->prenom;
+    }
 }

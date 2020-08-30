@@ -2,25 +2,33 @@
 
 namespace App\Entity;
 
-use App\Repository\EnyImportRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
+use App\Repository\EnyImportRepository;
+use Symfony\Component\HttpFoundation\File\File;
+use Doctrine\Common\Collections\ArrayCollection;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\Serializer\Annotation\Groups;
+
 
 /**
  * @ORM\Entity(repositoryClass=EnyImportRepository::class)
+ * @Vich\Uploadable
+ * @ORM\HasLifecycleCallbacks()
  */
 class EnyImport
 {
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
+     * @Groups("import:read")
      * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups("import:read")
      */
     private $createdAt;
 
@@ -31,52 +39,69 @@ class EnyImport
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("import:read")
      */
     private $filename;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups("import:read")
      */
     private $filesize;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups("import:read")
      */
     private $fromAt;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups("import:read")
      */
     private $toAt;
 
+    /** 
+     * @Vich\UploadableField(mapping="excel_file", fileNameProperty="filename", size="fileSize")
+     * 
+     * @var File|null
+     */
+    private $excelFile;
+
     /**
      * @ORM\Column(type="boolean", nullable=true)
+     * @Groups("import:read")
      */
     private $error;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("import:read")
      */
     private $displayName;
 
     /**
      * @ORM\ManyToOne(targetEntity=EnyBankingInfo::class, inversedBy="enyImports")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups("import:read")
      */
     private $bankInfo;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups("import:read")
      */
     private $rows;
 
     /**
      * @ORM\OneToMany(targetEntity=EnyDetailImport::class, mappedBy="enyImport")
+     * @Groups("import:read")
      */
     private $enyDetailImports;
 
     /**
      * @ORM\OneToMany(targetEntity=EnyMvt::class, mappedBy="import")
+     * @Groups("import:read")
      */
     private $enyMvts;
 
@@ -84,6 +109,16 @@ class EnyImport
     {
         $this->enyDetailImports = new ArrayCollection();
         $this->enyMvts = new ArrayCollection();
+    }
+
+    /**
+     * @ORM\PrePersist
+     *
+     * @return void
+     */
+    public function setCreatedAtValue() {
+        $date = new \DateTime();
+        $this->createdAt = $date;       
     }
 
     public function getId(): ?int
@@ -271,5 +306,22 @@ class EnyImport
         }
 
         return $this;
+    }
+
+    /**
+     * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile|null $excelFile
+     */
+    public function setExcelFile(?File $excelFile = null): void
+    {
+        $this->excelFile = $excelFile;
+
+        if (null !== $excelFile) {
+            $this->updatedAt = new \DateTimeImmutable();
+        }
+    }
+
+    public function getExcelFile(): ?File
+    {
+        return $this->excelFile;
     }
 }

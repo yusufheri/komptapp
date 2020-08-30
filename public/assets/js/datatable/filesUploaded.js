@@ -16,7 +16,7 @@ $(document).ready(function(){
         return x1 + x2;
     }
 
-    var baseurl = "/api/import/datatable";
+    var baseurl = "/importation/api/datatable";
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.open("GET",baseurl,true);
     xmlhttp.onreadystatechange = function(){
@@ -67,7 +67,7 @@ $(document).ready(function(){
                     }
                     },
                     {"title":"Nom du fichier", "data":null, render: function(data, type, row){
-                        return '<a href="/import/'+ row.id +'/view">' + row.filename +'</a>';
+                        return '<a href="/importation/'+ row.id +'/view">' + row.filename +'</a>';
                     }},
                     {"title":"Taille", "data":null, render: function(data, type, row) {
                         var val=  row.filesize / Math.pow(1024,2);
@@ -78,15 +78,15 @@ $(document).ready(function(){
                         var  somme_usd = 0;
                         var somme_autre = 0;
                         var devise = ""
-                        //console.log(row.detailImports)
-                        row.detailImports.forEach(obj => {
-                            devise = obj.devise.toString().toUpperCase();
+
+                        row.enyDetailImports.forEach(obj => {
+                            devise = obj.devise.name.toString().toUpperCase();
                             if ( devise== "CDF"){
-                                somme_cdf += obj.montant;
+                                somme_cdf += obj.amount;
                             } else if (devise == "USD"){
-                                somme_usd += obj.montant;
+                                somme_usd += obj.amount;
                             } else {
-                                somme_autre += obj.montant;
+                                somme_autre += obj.amount;
                             }
                         });
                         var message = ""
@@ -98,7 +98,7 @@ $(document).ready(function(){
                     {"title":"Etat", "data":null, render: function (data, type, row){
                         var success, error;
                         success = 0; error = 0;
-                        row.detailImports.forEach(obj => {
+                        row.enyDetailImports.forEach(obj => {
                             if(obj.error == true) {error ++;}
                             else success ++;
                         })
@@ -142,17 +142,17 @@ $(document).ready(function(){
 
             $("#example tbody").on('click', '.dt-view', function(){
                 var data = table.row($(this).parents('tr')).data();
-                location.href = "/import/"+data.id+"/view"
+                location.href = "/importation/"+data.id+"/view"
             })
 
             $("#example").on('click', '.dt-download', function(){
                 var data = table.row($(this).parents('tr')).data();
-                location.href = "/import/"+data.id+"/download/"
+                location.href = "/importation/"+data.id+"/download/"
             })
 
             $("#example").on('click', '.dt-delete', function(){
                 var data = table.row($(this).parents('tr')).data();
-                alert(data.id + " est l'id de la ligne sélectionnée de la personne " + data.name);
+                alert(data.id + " est l'id de la ligne sélectionnée  " + data.name);
             })
 
             

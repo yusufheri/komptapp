@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Deail:komptApp{% endblock %}
+
+{% block body %}
+    <h1>Detail #{{eny_mvt.id}}</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Date d'enregistrement</th>
+                <td>{{ eny_mvt.createdAt ? eny_mvt.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+
+            <tr>
+                <th>Date de paiement</th>
+                <td>{{ eny_mvt.paidAt ? eny_mvt.paidAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            
+            <tr>
+                <th>Etudiant</th>
+                <td><b>{{ eny_mvt.student.numEnyEtudiant.names }}</b></td>
+            </tr>
+
+            <tr>
+                <th>Motif</th>
+                <td><b>{{ eny_mvt.rubrique.name}}</b></td>
+            </tr>
+            
+            <tr>
+                <th>Montant payé</th>
+                <td><b>{{ eny_mvt.amount|number_format(2,',',' ') ~ " " ~ eny_mvt.devise.name}}</b></td>
+            </tr>
+            <tr>
+                <th>Source</th>
+                <td>{{ eny_mvt.fromBank ? 'Banque' : 'Caisse' }}</td>
+            </tr>
+            <tr>
+                <th>Commentaire</th>
+                <td>{{ eny_mvt.content }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    {% if eny_mvt.typeMvt.id == 1 %}
+        <a href="{{ path('eny_mvt_entry') }}" class="btn btn-outline-primary"><i class="fa fa-eye"></i> Voir la liste</a>
+    {% else %}
+        <a href="{{ path('eny_mvt_depenses') }}" class="btn btn-outline-primary"><i class="fa fa-eye"></i> Voir la liste</a>    
+    {% endif %}
+    
+
+    <a href="{{ path('eny_mvt_edit', {'id': eny_mvt.id}) }}" class="btn btn-outline-warning"> <i class="fa fa-edit"></i> Modifier</a>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}EnyPromoOrganisee{% endblock %}
+
+{% block body %}
+    <h1>EnyPromoOrganisee</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ eny_promo_organisee.id }}</td>
+            </tr>
+            <tr>
+                <th>Datecreate</th>
+                <td>{{ eny_promo_organisee.datecreate ? eny_promo_organisee.datecreate|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Num_eny_departement</th>
+                <td>{{ eny_promo_organisee.numEnyDepartement }}</td>
+            </tr>
+            <tr>
+                <th>Num_faculte</th>
+                <td>{{ eny_promo_organisee.numFaculte }}</td>
+            </tr>
+            <tr>
+                <th>Num_eny_annee_acad</th>
+                <td>{{ eny_promo_organisee.numEnyAnneeAcad }}</td>
+            </tr>
+            <tr>
+                <th>Salle</th>
+                <td>{{ eny_promo_organisee.salle }}</td>
+            </tr>
+            <tr>
+                <th>Deleted</th>
+                <td>{{ eny_promo_organisee.deleted ? eny_promo_organisee.deleted|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('eny_promo_organisee_index') }}">back to list</a>
+
+    <a href="{{ path('eny_promo_organisee_edit', {'id': eny_promo_organisee.id}) }}">edit</a>
+
+    {{ include('eny_promo_organisee/_delete_form.html.twig') }}
+{% endblock %}

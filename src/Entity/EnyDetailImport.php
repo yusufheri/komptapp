@@ -2,119 +2,159 @@
 
 namespace App\Entity;
 
-use App\Repository\EnyDetailImportRepository;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=EnyDetailImportRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  */
 class EnyDetailImport
 {
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
+     * @Groups("detail:read")
+     * @Groups("import:read")
      * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups("detail:read")
+     * @Groups("import:read")
      */
     private $createdAt;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     * @Groups("detail:read")
      */
     private $updatedAt;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     * @Groups("detail:read")
      */
     private $deletedAt;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups("detail:read")
+     * @Groups("import:read")
      */
     private $datePaid;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("detail:read")
+     * @Groups("import:read")
      */
     private $eventNo;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("detail:read")
+     * @Groups("import:read")
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups("detail:read")
+     * @Groups("import:read")
      */
     private $matricule;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("detail:read")
+     * @Groups("import:read")
      */
     private $section;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups("detail:read")
+     * @Groups("import:read")
      */
     private $orientation;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups("detail:read")
+     * @Groups("import:read")
      */
     private $promotion;
 
     /**
      * @ORM\Column(type="float")
+     * @Groups("detail:read")
+     * @Groups("import:read")
      */
     private $amount;
 
     /**
      * @ORM\ManyToOne(targetEntity=Devise::class, inversedBy="enyDetailImports")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups("detail:read")
+     * @Groups("import:read")
      */
     private $devise;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups("detail:read")
+     * @Groups("import:read")
      */
     private $sexe;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups("detail:read")
+     * @Groups("import:read")
      */
     private $categorie;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups("detail:read")
+     * @Groups("import:read")
      */
     private $tranche;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("detail:read")
+     * @Groups("import:read")
      */
     private $motif;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
+     * @Groups("detail:read")
+     * @Groups("import:read")
      */
     private $error;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups("detail:read")
+     * @Groups("import:read")
      */
     private $error_message;
 
     /**
      * @ORM\Column(type="text", nullable=true)
+     * @Groups("detail:read")
+     * @Groups("import:read")
      */
     private $content;
 
     /**
      * @ORM\ManyToOne(targetEntity=EnyEtudiant::class, inversedBy="enyDetailImports")
+     * @Groups("detail:read")
      */
     private $enyEtudiant;
 
@@ -128,6 +168,55 @@ class EnyDetailImport
      * @ORM\ManyToOne(targetEntity=EnyRubrique::class, inversedBy="enyDetailImports")
      */
     private $enyRubrique;
+
+    private $idDevise;
+
+    public function __construct(array $array) {
+
+        $step = 0;
+        if (count($array) > 8) {
+            $this->matricule    = $array[2];
+            $step = 1;
+        }
+
+        $section_orientation_promo = explode("/", trim($array[3 + $step])) ;
+        $sexe_cat_tranche =  explode("/",trim($array[6 + $step]));
+
+        $this->datePaid         = DetailImport::formatDate(trim($array[0]));
+        $this->eventNo          = trim($array[1]);
+        $this->name             = trim($array[2 + $step]);
+        $this->section          = $section_orientation_promo[0];
+        $this->orientation      = $section_orientation_promo[1];
+        $this->promotion        = $section_orientation_promo[2];
+        $this->amount          = explode(".",trim($array[4 + $step]))[0];
+        $this->idDevise           = trim($array[5 + $step]);
+        
+        $this->motif            = trim($array[7 + $step]);
+
+        $this->sexe = $sexe_cat_tranche[0];
+        $this->categorie = $sexe_cat_tranche[1];
+        $this->tranche = $sexe_cat_tranche[2];
+        
+        $this->amount = (float) str_replace([" ", ","], "", $this->amount);
+        //dd($th)
+    }
+
+    /**
+     * @ORM\PrePersist
+     *
+     * @return void
+     */
+    public function setCreatedAtValue() {
+        $date = new \DateTime();
+        $this->createdAt = $date;       
+    }
+
+    public static function formatDate(string $date)
+    {
+        $d = explode("/", explode(" ",$date)[0]);
+        
+        return \DateTime::createFromFormat('Ymd', $d[2].$d[1].$d[0]);
+    }
 
     public function getId(): ?int
     {
@@ -394,6 +483,26 @@ class EnyDetailImport
     public function setEnyRubrique(?EnyRubrique $enyRubrique): self
     {
         $this->enyRubrique = $enyRubrique;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of idDevise
+     */ 
+    public function getIdDevise()
+    {
+        return $this->idDevise;
+    }
+
+    /**
+     * Set the value of idDevise
+     *
+     * @return  self
+     */ 
+    public function setIdDevise($idDevise)
+    {
+        $this->idDevise = $idDevise;
 
         return $this;
     }

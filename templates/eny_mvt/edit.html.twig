@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit EnyMvt{% endblock %}
+
+{% block body %}
+    <h1>Modifier les informations</h1>
+
+    {{ include('eny_mvt/_form.html.twig', {'button_label': 'Modifier'}) }}
+
+    {% if eny_mvt.typeMvt.id == 1 %}
+        <a href="{{ path('eny_mvt_entry') }}" class="btn btn-outline-primary"><i class="fa fa-eye"></i> Voir la liste</a>
+    {% else %}
+        <a href="{{ path('eny_mvt_depenses') }}" class="btn btn-outline-primary"><i class="fa fa-eye"></i> Voir la liste</a>    
+    {% endif %}
+{% endblock %}

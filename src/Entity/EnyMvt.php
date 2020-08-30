@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=EnyMvtRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  */
 class EnyMvt
 {
@@ -47,7 +48,7 @@ class EnyMvt
     private $student;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string", length=255)
      */
     private $idEtudiant;
 
@@ -86,9 +87,51 @@ class EnyMvt
      */
     private $error_message;
 
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $paidAt;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=EnyTypeMvt::class, inversedBy="enyMvts")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $typeMvt;
+
+    /**
+     * @ORM\Column(type="float")
+     */
+    private $amount;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Devise::class, inversedBy="enyMvts")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $devise;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $amount_letter;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $fromBank;
+
     public function __construct()
     {
         $this->enyDispatches = new ArrayCollection();
+    }
+
+    /**
+     * @ORM\PrePersist
+     *
+     * @return void
+     */
+    public function setCreatedAtValue() {
+        $date = new \DateTime();
+        $this->createdAt = $date;       
     }
 
     public function getId(): ?int
@@ -156,12 +199,12 @@ class EnyMvt
         return $this;
     }
 
-    public function getIdEtudiant(): ?int
+    public function getIdEtudiant(): ?string
     {
         return $this->idEtudiant;
     }
 
-    public function setIdEtudiant(int $idEtudiant): self
+    public function setIdEtudiant(string $idEtudiant): self
     {
         $this->idEtudiant = $idEtudiant;
 
@@ -269,5 +312,83 @@ class EnyMvt
         $this->error_message = $error_message;
 
         return $this;
+    }
+
+    public function getPaidAt(): ?\DateTimeInterface
+    {
+        return $this->paidAt;
+    }
+
+    public function setPaidAt(\DateTimeInterface $paidAt): self
+    {
+        $this->paidAt = $paidAt;
+
+        return $this;
+    }
+
+    public function getTypeMvt(): ?EnyTypeMvt
+    {
+        return $this->typeMvt;
+    }
+
+    public function setTypeMvt(?EnyTypeMvt $typeMvt): self
+    {
+        $this->typeMvt = $typeMvt;
+
+        return $this;
+    }
+
+    public function getAmount(): ?float
+    {
+        return $this->amount;
+    }
+
+    public function setAmount(float $amount): self
+    {
+        $this->amount = $amount;
+
+        return $this;
+    }
+
+    public function getDevise(): ?Devise
+    {
+        return $this->devise;
+    }
+
+    public function setDevise(?Devise $devise): self
+    {
+        $this->devise = $devise;
+
+        return $this;
+    }
+
+    public function getAmountLetter(): ?string
+    {
+        return $this->amount_letter;
+    }
+
+    public function setAmountLetter(string $amount_letter): self
+    {
+        $this->amount_letter = $amount_letter;
+
+        return $this;
+    }
+
+    public function getFromBank(): ?bool
+    {
+        return $this->fromBank;
+    }
+
+    public function setFromBank(?bool $fromBank): self
+    {
+        $this->fromBank = $fromBank;
+
+        return $this;
+    }
+
+    public function getEtudiant():?string
+    {
+        return (!is_null($this->student)) ? $this->getStudent()->getNumEnyEtudiant()->getNames(): null;
+        
     }
 }

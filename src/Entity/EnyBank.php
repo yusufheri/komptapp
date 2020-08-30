@@ -2,13 +2,20 @@
 
 namespace App\Entity;
 
-use App\Repository\EnyBankRepository;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use App\Repository\EnyBankRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=EnyBankRepository::class)
+ * @ORM\HasLifecycleCallbacks()
+ * @UniqueEntity(
+ *      fields={"name"},
+ *     message="Il existe déjà un motif portant ce libelllé."
+ * 
+ * )
  */
 class EnyBank
 {
@@ -25,7 +32,7 @@ class EnyBank
     private $createdAt;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
      */
     private $name;
 
@@ -63,6 +70,18 @@ class EnyBank
     {
         $this->enyBankingInfos = new ArrayCollection();
     }
+
+    
+    /**
+     * @ORM\PrePersist
+     *
+     * @return void
+     */
+    public function setCreatedAtValue() {
+        $date = new \DateTime();
+        $this->createdAt = $date;       
+    }
+
 
     public function getId(): ?int
     {

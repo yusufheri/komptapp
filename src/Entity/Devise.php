@@ -23,6 +23,7 @@ class Devise
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @Groups("rubrique:read")
+     * @Groups("import:read")
      */
     private $id;
 
@@ -46,6 +47,7 @@ class Devise
      *
      * @ORM\Column(name="name", type="string", length=255, nullable=false)
      * @Groups("rubrique:read")
+     * @Groups("import:read")
      */
     private $name;
 
@@ -79,11 +81,17 @@ class Devise
      */
     private $enyDetailImports;
 
+    /**
+     * @ORM\OneToMany(targetEntity=EnyMvt::class, mappedBy="devise")
+     */
+    private $enyMvts;
+
     public function __construct()
     {
         $this->enyDetailRubriques = new ArrayCollection();
         $this->enyRubriqueCpts = new ArrayCollection();
         $this->enyDetailImports = new ArrayCollection();
+        $this->enyMvts = new ArrayCollection();
     }
 
     public function getCreatedAt(): ?\DateTimeInterface
@@ -269,6 +277,37 @@ class Devise
             // set the owning side to null (unless already changed)
             if ($enyDetailImport->getDevise() === $this) {
                 $enyDetailImport->setDevise(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|EnyMvt[]
+     */
+    public function getEnyMvts(): Collection
+    {
+        return $this->enyMvts;
+    }
+
+    public function addEnyMvt(EnyMvt $enyMvt): self
+    {
+        if (!$this->enyMvts->contains($enyMvt)) {
+            $this->enyMvts[] = $enyMvt;
+            $enyMvt->setDevise($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEnyMvt(EnyMvt $enyMvt): self
+    {
+        if ($this->enyMvts->contains($enyMvt)) {
+            $this->enyMvts->removeElement($enyMvt);
+            // set the owning side to null (unless already changed)
+            if ($enyMvt->getDevise() === $this) {
+                $enyMvt->setDevise(null);
             }
         }
 

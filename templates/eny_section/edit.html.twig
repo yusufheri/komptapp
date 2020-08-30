@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit EnySection{% endblock %}
+
+{% block body %}
+    <h1>Edit EnySection</h1>
+
+    {{ include('eny_section/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('eny_section_index') }}">back to list</a>
+
+    {{ include('eny_section/_delete_form.html.twig') }}
+{% endblock %}

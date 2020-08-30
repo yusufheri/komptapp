@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\EnyMvt;
+use App\Entity\EnyTypeMvt;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -17,6 +18,31 @@ class EnyMvtRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, EnyMvt::class);
+    }
+
+    /**
+     * Permet de retourner toutes les entrées enregistrées
+     *
+     * @return EnyMvt[] Returns an array of EnyMvt objects
+     */
+    public function findMvt(EnyTypeMvt $typeMvt): array
+    {
+        
+        return $this->createQueryBuilder('e')
+                    ->select('d', 'e')
+                    ->join('e.devise', 'd')                   
+                    ->addSelect('r', 'e')
+                    ->join('e.rubrique', 'r')
+                    //->addSelect('i', 'e')
+                    //->join('e.student', 'i')
+                    //->addSelect('s', 'i')
+                    //->join('i.num_eny_etudiant', 's')
+                    ->andWhere('e.typeMvt = :val')
+                    ->setParameter('val', $typeMvt)
+                    ->orderBy('e.createdAt', 'DESC')
+                    ->getQuery()
+                    ->getResult()
+                    ;
     }
 
     // /**

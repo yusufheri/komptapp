@@ -1,0 +1,9 @@
+{{ form_start(form) }}
+    {{ form_row(form.account_name) }}
+    {{ form_row(form.account_number) }}
+    {{ form_row(form.content) }}
+    
+    {{ form_widget(form) }}
+    <button class="btn btn-outline-success"><i class="fa fa-save"></i> {{ button_label|default('Enregistrer') }}</button>
+    <a href="{{ path('eny_banking_info_index') }}" class="btn btn-outline-primary float-right"><i class="fa fa-eye"></i> Voir la liste</a>
+{{ form_end(form) }}

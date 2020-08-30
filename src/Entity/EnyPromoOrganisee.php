@@ -61,6 +61,9 @@ class EnyPromoOrganisee
      */
     private $deleted;
 
+    private $nameSection;
+    private $nameOrientation;
+
     /**
      * @ORM\OneToMany(targetEntity=EnyInscription::class, mappedBy="num_eny_promo_organisee")
      */
@@ -199,6 +202,46 @@ class EnyPromoOrganisee
                 $enyInscription->setNumEnyPromoOrganisee(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * Get the value of nameSection
+     */ 
+    public function getNameSection()
+    {
+        return $this->nameSection;
+    }
+
+    /**
+     * Set the value of nameSection
+     *
+     * @return  self
+     */ 
+    public function setNameSection($nameSection)
+    {
+        $this->nameSection = $nameSection;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of nameOrientation
+     */ 
+    public function getNameOrientation()
+    {
+        return $this->nameOrientation;
+    }
+
+    /**
+     * Set the value of nameOrientation
+     *
+     * @return  self
+     */ 
+    public function setNameOrientation($nameOrientation)
+    {
+        $this->nameOrientation = $nameOrientation;
 
         return $this;
     }
