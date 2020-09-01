@@ -151,7 +151,6 @@ class EnyDepenseType extends AbstractType
                     'label' => 'Solde du Compte',
                     'data' => 'La vi est belle',
                     'attr' => [
-                        'disabled' => true,
                         'value' => $enyRubriqueCpt ? $enyRubriqueCpt->getAmount().' '.$enyRubriqueCpt->getDevise()->getName():''                       
                     ]
                 ]

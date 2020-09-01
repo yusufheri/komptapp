@@ -38,13 +38,8 @@
             </tr>
         </tbody>
     </table>
-
-    {% if eny_mvt.typeMvt.id == 1 %}
-        <a href="{{ path('eny_mvt_entry') }}" class="btn btn-outline-primary"><i class="fa fa-eye"></i> Voir la liste</a>
-    {% else %}
-        <a href="{{ path('eny_mvt_depenses') }}" class="btn btn-outline-primary"><i class="fa fa-eye"></i> Voir la liste</a>    
-    {% endif %}
     
-
-    <a href="{{ path('eny_mvt_edit', {'id': eny_mvt.id}) }}" class="btn btn-outline-warning"> <i class="fa fa-edit"></i> Modifier</a>
+    <a href="{{ path('eny_mvt_depenses') }}" class="btn btn-outline-primary"><i class="fa fa-eye"></i> Voir la liste</a>    
+    
+    <a href="{{ path('eny_mvt_edit_depenses', {'id': eny_mvt.id}) }}" class="btn btn-outline-warning"> <i class="fa fa-edit"></i> Modifier</a>
 {% endblock %}

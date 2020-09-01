@@ -3,13 +3,16 @@
 {% block title %}Edition::komptApp{% endblock %}
 
 {% block body %}
-    <h1>Modifier les informations</h1>
-
-    {{ include('eny_mvt/_form.html.twig', {'button_label': 'Modifier'}) }}
-
-    {% if eny_mvt.typeMvt.id == 1 %}
-        <a href="{{ path('eny_mvt_entry') }}" class="btn btn-outline-primary"><i class="fa fa-eye"></i> Voir la liste</a>
-    {% else %}
-        <a href="{{ path('eny_mvt_depenses') }}" class="btn btn-outline-primary"><i class="fa fa-eye"></i> Voir la liste</a>    
-    {% endif %}
+    <div class="row">
+        <div class="col-md-6"><h1><i class="fa fa-edit"></i> Modifier les informations</h1></div>
+        <div class="col-md-6">
+            {% if eny_mvt.typeMvt.id == 1 %}
+                <a href="{{ path('eny_mvt_entry') }}" class="btn btn-outline-primary float-right mb-2"><i class="fa fa-eye"></i> Voir la liste</a>
+            {% else %}
+                <a href="{{ path('eny_mvt_depenses') }}" class="btn btn-outline-primary float-right mb-2"><i class="fa fa-eye"></i> Voir la liste</a>    
+            {% endif %}
+        </div>    
+    </div>
+    
+    {{ include('eny_mvt/_form.html.twig', {'button_label': 'Modifier'}) }}    
 {% endblock %}

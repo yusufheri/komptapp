@@ -1,4 +1,4 @@
-<div class="container alert alert-light">
+<div class="alert alert-light">
     <h1>Remplissez tous les champs obligatoires (*)</h1>
     <hr>
     {{ form_start(form) }}
@@ -13,7 +13,7 @@
             <div class="col-md-6">{{ form_row(form.amount) }}</div>
         </div>
         {{ form_widget(form) }}
-        <button class="btn btn-outline-success"><i class="fas fa-save    "></i> {{ button_label|default('Enregistrer') }}</button>
+        <button class="btn btn-outline-success"><i class="fas fa-save    "></i> {{ button_label|default('Enregistrer') }}</button> <br>
     {{ form_end(form) }}
 </div>
 

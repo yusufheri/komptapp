@@ -4,12 +4,36 @@
 
 {% block body %}
     <h1>Modifier les informations</h1>
+    <p>Non disponible !!</p>
+   {#  {{ include('eny_mvt/depenses/_form.html.twig', {'button_label': 'Modifier'}) }} #}
 
-    {{ include('eny_mvt/depenses/_form.html.twig', {'button_label': 'Modifier'}) }}
+    <a href="{{ path('eny_mvt_depenses') }}" class="btn btn-outline-primary"><i class="fa fa-eye"></i> Voir la liste</a>    
+  
+{% endblock %}
 
-    {% if eny_mvt.typeMvt.id == 1 %}
-        <a href="{{ path('eny_mvt_entry') }}" class="btn btn-outline-primary"><i class="fa fa-eye"></i> Voir la liste</a>
-    {% else %}
-        <a href="{{ path('eny_mvt_depenses') }}" class="btn btn-outline-primary"><i class="fa fa-eye"></i> Voir la liste</a>    
-    {% endif %}
+
+{% block javascripts %}
+    <script>
+        $(document).on('change', '#eny_depense_rubrique, #eny_depense_compte', function(){
+            
+            let $field = $(this);
+            let $rubriqueField = $('#eny_depense_rubrique')
+            let $form = $field.closest('form')
+
+            let target = '#' + $field.attr('id').replace('compte', 'solde').replace('rubrique', 'compte')
+            let data = {}
+
+            $("#eny_depense_solde").val('')
+            $("#eny_depense_solde").css('font-weight', 'bold')
+
+            data[$rubriqueField.attr('name')] = $rubriqueField.val()
+            data[$field.attr('name')] = $field.val()
+            
+            $.post($form.attr('action'), data).then(function (data) {                
+                let $input = $(data).find(target);
+                $(target).replaceWith($input);
+            })
+            
+        })
+    </script>
 {% endblock %}

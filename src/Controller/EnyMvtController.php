@@ -144,8 +144,6 @@ class EnyMvtController extends AbstractController
             if($type == 1)
             {
                 return $this->redirectToRoute('eny_mvt_entry');
-            } else if($type == 2) {
-                return $this->redirectToRoute('eny_mvt_depenses');
             } else {
                 return new Response("No access !!!",404);
             }
@@ -173,17 +171,14 @@ class EnyMvtController extends AbstractController
      */
     public function edit_depenses(Request $request, EnyMvt $enyMvt): Response
     {
-        $form = $this->createForm(EnyMvtType::class, $enyMvt);
+        $form = $this->createForm(EnyDepenseType::class, $enyMvt);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
             $type = $enyMvt->getTypeMvt()->getId();
-            if($type == 1)
-            {
-                return $this->redirectToRoute('eny_mvt_entry');
-            } else if($type == 2) {
+            if($type == 2) {
                 return $this->redirectToRoute('eny_mvt_depenses');
             } else {
                 return new Response("No access !!!",404);
