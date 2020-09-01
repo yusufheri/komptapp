@@ -303,4 +303,9 @@ class EnyRubriqueCpt
         return $this;
     }
 
+    public function __toString()
+    {
+        return $this->compte->getName();
+    }
+
 }

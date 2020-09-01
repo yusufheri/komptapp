@@ -1,11 +1,22 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New EnyMvt{% endblock %}
-
+{% block title %}Nouvelle entrée::komptApp{% endblock %}
+{% block stylesheets %}
+    <link href = "https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel = "stylesheet" />
+{% endblock %}
 {% block body %}
     <h1>{{title}}</h1>
 
     {{ include('eny_mvt/_form.html.twig') }}
 
     
+{% endblock %}
+{% block javascripts %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"/>
+    <script type="text/javascript">
+        $(document).ready(function(){})
+    </script>
+    <script type="text/javascript">
+        $('select').select2();
+    </script>
 {% endblock %}

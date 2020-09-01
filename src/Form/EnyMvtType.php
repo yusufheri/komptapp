@@ -30,7 +30,7 @@ class EnyMvtType extends AbstractType
                 'attr' => [
                     'placeholder' => 'Selectionner la date',
                 ],                
-                'widget' => 'single_text'
+                'widget' => 'single_text',
             ])
             ->add('amount', MoneyType::class, [
                 'label' => 'Montant payé (*)',
@@ -93,6 +93,11 @@ class EnyMvtType extends AbstractType
                 'attr' => [
                     'rows' => 5,
                     'placeholder' => 'Laissez un commentaire ici'
+                ]
+            ])
+            ->add('solde', HiddenType::class, [
+                'attr' => [
+                    'value' => 0
                 ]
             ])
         ;

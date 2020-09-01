@@ -2,10 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\EnyMvtRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\EnyMvtRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=EnyMvtRepository::class)
@@ -38,6 +40,7 @@ class EnyMvt
     /**
      * @ORM\ManyToOne(targetEntity=EnyRubrique::class, inversedBy="enyMvts")
      * @ORM\JoinColumn(nullable=true)
+     * @Assert\NotBlank()
      */
     private $rubrique;
 
@@ -54,6 +57,7 @@ class EnyMvt
 
     /**
      * @ORM\ManyToOne(targetEntity=EnyRubriqueCpt::class, inversedBy="enyMvts")
+     *
      */
     private $compte;
 
@@ -88,7 +92,7 @@ class EnyMvt
     private $error_message;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $paidAt;
 
@@ -100,6 +104,7 @@ class EnyMvt
 
     /**
      * @ORM\Column(type="float")
+     * @Assert\NotBlank()
      */
     private $amount;
 
@@ -118,6 +123,13 @@ class EnyMvt
      * @ORM\Column(type="boolean", nullable=true)
      */
     private $fromBank;
+
+    /**
+     * @var float 
+     * @Assert\NotBlank()
+     * 
+     * */
+    private $solde;
 
     public function __construct()
     {
@@ -319,7 +331,7 @@ class EnyMvt
         return $this->paidAt;
     }
 
-    public function setPaidAt(\DateTimeInterface $paidAt): self
+    public function setPaidAt(?\DateTimeInterface $paidAt): self
     {
         $this->paidAt = $paidAt;
 
@@ -390,5 +402,25 @@ class EnyMvt
     {
         return (!is_null($this->student)) ? $this->getStudent()->getNumEnyEtudiant()->getNames(): null;
         
+    }
+
+    /**
+     * Get the value of solde
+     */ 
+    public function getSolde()
+    {
+        return $this->solde;
+    }
+
+    /**
+     * Set the value of solde
+     *
+     * @return  self
+     */ 
+    public function setSolde($solde)
+    {
+        $this->solde = $solde;
+
+        return $this;
     }
 }

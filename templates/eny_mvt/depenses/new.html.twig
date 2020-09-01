@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvelle depense::komptApp{% endblock %}
+
+{% block body %}
+    <h1>{{title}}</h1>
+
+    {{ include('eny_mvt/depenses/_form.html.twig') }}
+
+    
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $(document).on('change', '#eny_depense_rubrique, #eny_depense_compte', function(){
+            
+            let $field = $(this);
+            let $rubriqueField = $('#eny_depense_rubrique')
+            let $form = $field.closest('form')
+
+            let target = '#' + $field.attr('id').replace('compte', 'solde').replace('rubrique', 'compte')
+            let data = {}
+
+            $("#eny_depense_solde").val('')
+            $("#eny_depense_solde").css('font-weight', 'bold')
+
+            data[$rubriqueField.attr('name')] = $rubriqueField.val()
+            data[$field.attr('name')] = $field.val()
+            
+            $.post($form.attr('action'), data).then(function (data) {                
+                let $input = $(data).find(target);
+                $(target).replaceWith($input);
+            })
+            
+        })
+    </script>
+{% endblock %}

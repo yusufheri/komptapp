@@ -1,11 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edition::komptApp{% endblock %}
+{% block title %}Edition depense::komptApp{% endblock %}
 
 {% block body %}
     <h1>Modifier les informations</h1>
 
-    {{ include('eny_mvt/_form.html.twig', {'button_label': 'Modifier'}) }}
+    {{ include('eny_mvt/depenses/_form.html.twig', {'button_label': 'Modifier'}) }}
 
     {% if eny_mvt.typeMvt.id == 1 %}
         <a href="{{ path('eny_mvt_entry') }}" class="btn btn-outline-primary"><i class="fa fa-eye"></i> Voir la liste</a>

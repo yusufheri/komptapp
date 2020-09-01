@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\EnyMvt;
 use App\Entity\EnyTypeMvt;
+use App\Form\EnyDepenseType;
 use App\Form\EnyMvtType;
 use App\Repository\EnyMvtRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -34,7 +35,7 @@ class EnyMvtController extends AbstractController
     public function sorties(EnyMvtRepository $enyMvtRepository): Response
     {
         $type = $this->getDoctrine()->getManager()->getRepository(EnyTypeMvt::class)->find(2);
-        return $this->render('eny_mvt/index.html.twig', [
+        return $this->render('eny_mvt/depenses/index.html.twig', [
             'eny_mvts' => $enyMvtRepository->findMvt($type),
             'title' => 'Historiques des Depenses'
         ]);
@@ -74,18 +75,21 @@ class EnyMvtController extends AbstractController
     public function new_depense(Request $request): Response
     {
         $enyMvt = new EnyMvt();
-        $form = $this->createForm(EnyMvtType::class, $enyMvt);
+        $form = $this->createForm(EnyDepenseType::class, $enyMvt);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
+            $enyMvt->setIdEtudiant('')
+                    ->setAmountLetter($enyMvt->getAmount())
+                    ->setTypeMvt($entityManager->getRepository(EnyTypeMvt::class)->find(2));
             $entityManager->persist($enyMvt);
             $entityManager->flush();
 
             return $this->redirectToRoute('eny_mvt_depenses');
         }
 
-        return $this->render('eny_mvt/new.html.twig', [
+        return $this->render('eny_mvt/depenses/new.html.twig', [
             'eny_mvt' => $enyMvt,
             'form' => $form->createView(),
             'title' => 'Nouvelle depense'
@@ -149,6 +153,45 @@ class EnyMvtController extends AbstractController
         }
 
         return $this->render('eny_mvt/edit.html.twig', [
+            'eny_mvt' => $enyMvt,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/depenses/{id}", name="eny_mvt_show_depenses", methods={"GET"})
+     */
+    public function show_depenses(EnyMvt $enyMvt): Response
+    {
+        return $this->render('eny_mvt/depenses/show.html.twig', [
+            'eny_mvt' => $enyMvt,
+        ]);
+    }
+
+    /**
+     * @Route("/depenses/{id}/edit", name="eny_mvt_edit_depenses", methods={"GET","POST"})
+     */
+    public function edit_depenses(Request $request, EnyMvt $enyMvt): Response
+    {
+        $form = $this->createForm(EnyMvtType::class, $enyMvt);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+
+            $type = $enyMvt->getTypeMvt()->getId();
+            if($type == 1)
+            {
+                return $this->redirectToRoute('eny_mvt_entry');
+            } else if($type == 2) {
+                return $this->redirectToRoute('eny_mvt_depenses');
+            } else {
+                return new Response("No access !!!",404);
+            }
+            
+        }
+
+        return $this->render('eny_mvt/depenses/edit.html.twig', [
             'eny_mvt' => $enyMvt,
             'form' => $form->createView(),
         ]);
