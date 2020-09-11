@@ -12,6 +12,7 @@ use App\Repository\EnyMotifRepository;
 use App\Repository\EnySousRubriqueRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -92,14 +93,22 @@ class EnyRubriqueType extends AbstractType
                 'class' => EnyMotif::class,
                 'query_builder' => function(EnyMotifRepository $enyMotifRepository) {
                     $qb = $enyMotifRepository->createQueryBuilder('e');
-                    return $qb
-                            ->where($qb->expr()->isNull('e.rubrique'))
-                            ->andWhere($qb->expr()->isNull('e.deletedAt'))
+                    return $qb                            
+                            ->where($qb->expr()->isNull('e.deletedAt'))
+                            //->andWhere($qb->expr()->isNull('e.rubrique'))
                             ->orderBy('e.name', "ASC");
                 },
                 "choice_label" => "name",
                 "multiple" => true,
                 "expanded" => true,
+            ])
+            ->add('classe_recrutement', CheckboxType::class, [
+                'label' => "Classe de recrutement",
+                'required' => false,
+            ])
+            ->add('classe_montante', CheckboxType::class, [
+                'label' => "Classe montante",
+                'required' => false,
             ])
             
         ;

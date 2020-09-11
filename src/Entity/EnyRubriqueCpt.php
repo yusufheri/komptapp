@@ -92,6 +92,16 @@ class EnyRubriqueCpt
      */
     private $enyDispatches;
 
+    /**
+     * @ORM\Column(type="float", nullable=true)
+     */
+    private $trancheOne;
+
+    /**
+     * @ORM\Column(type="float", nullable=true)
+     */
+    private $trancheTwo;
+
     public function __construct()
     {
         $this->enyMvts = new ArrayCollection();
@@ -306,6 +316,30 @@ class EnyRubriqueCpt
     public function __toString()
     {
         return $this->compte->getName();
+    }
+
+    public function getTrancheOne(): ?float
+    {
+        return $this->trancheOne;
+    }
+
+    public function setTrancheOne(?float $trancheOne): self
+    {
+        $this->trancheOne = $trancheOne;
+
+        return $this;
+    }
+
+    public function getTrancheTwo(): ?float
+    {
+        return $this->trancheTwo;
+    }
+
+    public function setTrancheTwo(?float $trancheTwo): self
+    {
+        $this->trancheTwo = $trancheTwo;
+
+        return $this;
     }
 
 }

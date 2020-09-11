@@ -81,11 +81,7 @@ class EnyRubrique
      */
     private $enyDetailImports;
 
-    /**
-     * @ORM\OneToMany(targetEntity=EnyMotif::class, mappedBy="rubrique", cascade={"persist"})
-     * @Groups("rubrique:read")
-     */
-    private $enyMotifs;
+    
 
     
     private $devise;
@@ -98,6 +94,23 @@ class EnyRubrique
      */
     private $enyMvts;
 
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $classe_recrutement;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $classe_montante;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=EnyMotif::class, inversedBy="enyRubriques")
+     */
+    private $motifs;
+    
+    private $enyMotifs;
+
 
 
     public function __construct()
@@ -106,10 +119,11 @@ class EnyRubrique
         $this->sousRubriques = new ArrayCollection();
         $this->enyDetailRubriques = new ArrayCollection();
         $this->enyDetailImports = new ArrayCollection();
-        $this->enyMotifs = new ArrayCollection();
-        //$this->devise = new ArrayCollection();
+        
 
-        $this->enyMvts = new ArrayCollection();        
+        $this->enyMvts = new ArrayCollection();
+        $this->motifs = new ArrayCollection();  
+        $this->enyMotifs = new ArrayCollection();      
     }
 
     /**
@@ -192,7 +206,29 @@ class EnyRubrique
      */
     public function getEnyRubriqueCpts(): Collection
     {
-        return $this->enyRubriqueCpts;
+        return $this->enyRubriqueCpts->map(function(EnyRubriqueCpt $cpt) {
+            if (is_null($cpt->getDeletedAt())) return $cpt;
+        });
+    }
+
+    /**
+     * @return Collection|EnyRubriqueCpt[]
+     */
+    public function getEnyRubriqueCptsDeuxiemeTranche(): Collection
+    {
+        return $this->enyRubriqueCpts->map(function(EnyRubriqueCpt $cpt) {
+            if (is_null($cpt->getDeletedAt()) && (! is_null($cpt->getTrancheTwo()))) return $cpt;
+        });
+    }
+
+    /**
+     * @return Collection|EnyRubriqueCpt[]
+     */
+    public function getEnyRubriqueCptsPremiereTranche(): Collection
+    {
+        return $this->enyRubriqueCpts->map(function(EnyRubriqueCpt $cpt) {
+            if (is_null($cpt->getDeletedAt()) && (is_null($cpt->getTrancheTwo()))) return $cpt;
+        });
     }
 
     public function addEnyRubriqueCpt(EnyRubriqueCpt $enyRubriqueCpt): self
@@ -305,37 +341,7 @@ class EnyRubrique
 
         return $this;
     }
-
-    /**
-     * @return Collection|EnyMotif[]
-     */
-    public function getEnyMotifs(): Collection
-    {
-        return $this->enyMotifs;
-    }
-
-    public function addEnyMotif(EnyMotif $enyMotif): self
-    {
-        if (!$this->enyMotifs->contains($enyMotif)) {
-            $this->enyMotifs[] = $enyMotif;
-            $enyMotif->setRubrique($this);
-        }
-
-        return $this;
-    }
-
-    public function removeEnyMotif(EnyMotif $enyMotif): self
-    {
-        if ($this->enyMotifs->contains($enyMotif)) {
-            $this->enyMotifs->removeElement($enyMotif);
-            // set the owning side to null (unless already changed)
-            if ($enyMotif->getRubrique() === $this) {
-                $enyMotif->setRubrique(null);
-            }
-        }
-
-        return $this;
-    }
+    
 
     /**
      * Get the value of devise
@@ -417,14 +423,32 @@ class EnyRubrique
         return $this;
     }
 
-    public function getLastDetailsRubrique()
+    public function getLastDetailsRubrique():?EnyDetailRubrique
     {
         return $this->enyDetailRubriques->last();
     }
 
-    public function MayBeAddRubriqueCompte(EnyRubriqueCpt $rubriqueCompte) 
+    public function existRubriqueCompte(EnyRubriqueCpt $rubriqueCompte)
     {
-        return $this->enyRubriqueCpts->contains($rubriqueCompte);
+        $compte = $rubriqueCompte->getCompte();
+        /**@var EnyRubriqueCpt  $rubriqueCpt */
+        foreach ($this->enyRubriqueCpts as $key => $rubriqueCpt) {
+            if (($rubriqueCpt->getCompte() === $compte) && ($rubriqueCpt->getDeletedAt() == null )) return true;
+        }
+        return false;
+    }
+
+    public function MayBeAddRubriqueCompte(EnyRubriqueCpt $rubriqueCompte) 
+    {        
+        $somme = 0;
+        /**@var EnyRubriqueCpt  $rubriqueCpt */
+        foreach ($this->enyRubriqueCpts as $key => $rubriqueCpt) {
+            $somme += $rubriqueCpt->getAmount();
+        }
+
+        $somme += $rubriqueCompte->getAmount();
+        if ($this->getLastDetailsRubrique()->getAmount() >= $somme) return true;
+        return false;
     }
 
     public function getDetailAmountRubrique()
@@ -460,6 +484,80 @@ class EnyRubrique
                 $enyMvt->setRubrique(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getClasseRecrutement(): ?bool
+    {
+        return $this->classe_recrutement;
+    }
+
+    public function setClasseRecrutement(?bool $classe_recrutement): self
+    {
+        $this->classe_recrutement = $classe_recrutement;
+
+        return $this;
+    }
+
+    public function getClasseMontante(): ?bool
+    {
+        return $this->classe_montante;
+    }
+
+    public function setClasseMontante(?bool $classe_montante): self
+    {
+        $this->classe_montante = $classe_montante;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|EnyMotif[]
+     */
+    public function getMotifs(): Collection
+    {
+        return $this->motifs;
+    }
+
+    public function addMotif(EnyMotif $motif): self
+    {
+        if (!$this->motifs->contains($motif)) {
+            $this->motifs[] = $motif;
+        }
+
+        return $this;
+    }
+
+    public function removeMotif(EnyMotif $motif): self
+    {
+        if ($this->motifs->contains($motif)) {
+            $this->motifs->removeElement($motif);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Get liste des motifs
+     *
+     * @return Collection|EnyMotif[]
+     */ 
+    public function getEnyMotifs():Collection
+    {
+        return $this->enyMotifs;
+    }
+
+    /**
+     * Set liste des motifs
+     *
+     * @param  EnyMotif[]  $enyMotifs  Liste des motifs
+     *
+     * @return  self
+     */ 
+    public function setEnyMotifs($enyMotifs)
+    {
+        $this->enyMotifs = $enyMotifs;
 
         return $this;
     }

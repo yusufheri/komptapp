@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouveau - Tranche::komptApp{% endblock %}
+
+{% block body %}
+    <h1>Tranche: Nouveau libelllé</h1>
+
+    {{ include('eny_tranche/_form.html.twig') }}
+    <hr><br>
+    <a href="{{ path('eny_tranche_index') }}" class="btn btn-outline-info"> <i class="fa fa-eye"></i> Voir la liste</a>
+{% endblock %}

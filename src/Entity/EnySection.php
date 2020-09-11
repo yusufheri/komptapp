@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=EnySectionRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  */
 class EnySection
 {
@@ -41,6 +42,16 @@ class EnySection
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $code;
+
+    /**
+     * @ORM\PrePersist
+     *
+     * @return void
+     */
+    public function setCreatedAtValue() {
+        $date = new \DateTime();
+        $this->createdAt = $date;       
+    }
 
     public function getId(): ?int
     {

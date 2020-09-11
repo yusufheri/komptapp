@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit EnyTranche{% endblock %}
+
+{% block body %}
+    <h1>Edit EnyTranche</h1>
+
+    {{ include('eny_tranche/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('eny_tranche_index') }}">back to list</a>
+
+    {{ include('eny_tranche/_delete_form.html.twig') }}
+{% endblock %}

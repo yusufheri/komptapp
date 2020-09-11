@@ -53,10 +53,6 @@
 										<a href="{{ path('eny_mvt_entry_new') }}" class="nav-link "> <span class="title"><i class="fa fa-plus"></i> Nouvelle entrée</span>
 										</a>
 									</li>
-									<li class="nav-item">
-										<a href="{{ path('eny_mvt_entry_new_file') }}" class="nav-link "> <span class="title"><i class="fa fa-file-excel-o"></i> Importation du fichier</span>
-										</a>
-									</li>
 								</ul>
 							</li>
 
@@ -76,6 +72,27 @@
 							</li>
 
 							<li class="nav-item">
+								<a href="#" class="nav-link nav-toggle"><i class="material-icons">functions</i>
+									<span class="title">Rubriques - comptes</span><span class="arrow"></span></a>
+								<ul class="sub-menu">
+									<li class="nav-item">
+										<a href="{{ path('admin_rubriques_index') }}" class="nav-link "> <span class="title"> <i class="fas fa-table   "></i> Liste des rubriques</span>
+										</a>
+									</li>
+									<li class="nav-item">
+										<a href="#" class="nav-link "> <span class="title"> <i class="fas fa-table   "></i> Liste des Comptes</span>
+										</a>
+									</li>
+								</ul>
+							</li>
+
+							<li class="nav-item">
+								<a href="{{ path('eny_dispatch_index') }}" class="nav-link nav-toggle"><i class="material-icons">open_with</i>
+									<span class="title">Dispatching</span>
+								</a>
+							</li> 
+
+							<li class="nav-item">
 								<a href="#" class="nav-link nav-toggle"> <i class="material-icons">cloud_download</i>
 									<span class="title">Téléversement</span> <span class="arrow"></span>
 								</a>
@@ -89,19 +106,7 @@
 										</a>
 									</li>
 								</ul>
-							</li>
-
-							<li class="nav-item">
-								<a href="{{ path('admin_rubriques_index') }}" class="nav-link nav-toggle"><i class="material-icons">insert_chart</i>
-									<span class="title">Rubriques</span>
-								</a>
-							</li>
-
-							<li class="nav-item">
-								<a href="#" class="nav-link nav-toggle"><i class="material-icons">timeline</i>
-									<span class="title">Comptes</span>
-								</a>
-							</li>							
+							</li>					
 							
 							<li class="nav-item">
 								<a href="#" class="nav-link nav-toggle"> <i class="fa fa-cogs" aria-hidden="true"></i>
@@ -137,6 +142,10 @@
 									</li>
 									<li class="nav-item">
 										<a href="{{ path('devise_index') }}" class="nav-link "><i class="fa fa-plus-circle" aria-hidden="true"></i> <span class="title">Devise</span>
+										</a>
+									</li>
+									<li class="nav-item">
+										<a href="{{ path('eny_tranche_index') }}" class="nav-link "><i class="fa fa-plus-circle" aria-hidden="true"></i> <span class="title">Tranches</span>
 										</a>
 									</li>
 								</ul>

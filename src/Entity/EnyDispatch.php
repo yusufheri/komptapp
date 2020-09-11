@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=EnyDispatchRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  */
 class EnyDispatch
 {
@@ -58,6 +59,21 @@ class EnyDispatch
      * @ORM\Column(type="text", nullable=true)
      */
     private $content;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $symbol;
+
+    /**
+     * @ORM\PrePersist
+     *
+     * @return void
+     */
+    public function setCreatedAtValue() {
+        $date = new \DateTime();
+        $this->createdAt = $date;       
+    }
 
     public function getId(): ?int
     {
@@ -156,6 +172,18 @@ class EnyDispatch
     public function setContent(?string $content): self
     {
         $this->content = $content;
+
+        return $this;
+    }
+
+    public function getSymbol(): ?bool
+    {
+        return $this->symbol;
+    }
+
+    public function setSymbol(?bool $symbol): self
+    {
+        $this->symbol = $symbol;
 
         return $this;
     }

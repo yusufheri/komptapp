@@ -34,18 +34,31 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-2">
                         <div class="form-group">
                             <label for="simpleFormEmail">Pour cenatge</label>
                             <input type="decimal" class="form-control"  placeholder="Saisir le pourc centage" name="percent" id="percent">
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="form-group">
                             <label for="simpleFormPassword">Montant<span class="required" aria-required="true"> * </span></label>
                             <input type="integer" class="form-control"  placeholder="Saisir le montant" name="amount" id="amount">
                         </div>
                     </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="simpleFormEmail">Tranche 1</label>
+                            <input type="decimal" class="form-control"  placeholder="Première tranche" name="tranche1" id="tranche1">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="simpleFormEmail">Tranche 2</label>
+                            <input type="decimal" class="form-control"  placeholder="Deuxième tranche" name="tranche2" id="tranche2">
+                        </div>
+                    </div>
+                    
                 </div>
 
                 <div class="form-group">
@@ -59,25 +72,33 @@
     </div>
     {% block javascripts %}
     <script>
+        
         $(document).ready(function(){
         
             $("#percent").on("keyup",  function(e) {
                 let percent = $(this).val()
                 if($.isNumeric(percent)) { 
                     if(percent <= 100) {
-                        $(this).css("background-color", "white");                 
+                        $(this).css("background-color", "white");   
+                        $("#amount").css("background-color", "white");              
                         var amount = $("#amountRubrique").text().replace('.','')
                         amount = parseInt(amount);
                         
                         let calcul = amount * percent / 100 ;
                         $("#amount").val(calcul);
+                        $("#tranche1").val(calcul);
+                        $("#tranche2").val('');
                     } else {
                         $(this).css("background-color", "red");
                         $("#amount").val('');
+                        $("#tranche1").val('');
+                        $("#tranche2").val('');
                     }
                 } else {
                     $(this).css("background-color", "red");
                     $("#amount").val('');
+                    $("#tranche1").val('');
+                    $("#tranche2").val('');
                 }                
                 
             })
@@ -89,19 +110,27 @@
                 if($.isNumeric(amount)) {  
                     if(amountRubrique >= amount) 
                     {
-                        $(this).css("background-color", "white");                    
+                        $(this).css("background-color", "white"); 
+                        $("#percent").css("background-color", "white");                   
                         let calcul = amount*100 / amountRubrique ;
-                        $("#percent").val(calcul.toFixed(2));
+                        $("#percent").val(calcul.toFixed(3));
+                        $("#tranche1").val(amount);
+                        $("#tranche2").val('');
                     } else {
                         $(this).css("background-color", "red");
                         $("#percent").val('');
+                        $("#tranche1").val('');
+                        $("#tranche2").val('');
                     }
                 } else {
                     $(this).css("background-color", "red");
                     $("#percent").val('');
+                    $("#tranche1").val('');
+                    $("#tranche2").val('');
                 }                
                 
             })
-        });    
+        });        
     </script>
+    
     {% endblock %}

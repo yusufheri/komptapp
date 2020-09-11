@@ -1,0 +1,117 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Repartition::komptApp{% endblock %}
+
+{% block stylesheets %}    
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.21/af-2.3.5/b-1.6.2/b-colvis-1.6.2/b-flash-1.6.2/b-html5-1.6.2/b-print-1.6.2/r-2.2.5/sl-1.3.1/datatables.min.css"/>
+{% endblock %}
+
+{% block body %}
+{% include "home/partials/page-bar.html.twig" with {title : "Dispatching", bigTitle: "Repartition automatique"  } %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="tabbable-line">
+                <ul class="nav customtab nav-tabs" role="tablist">
+                    <li class="nav-item"><a href="#tab1" class="nav-link active" data-toggle="tab"><i class="fa fa-dashcube" aria-hidden="true"></i> A repartir ({{ eny_mvts| length }})</a></li>
+                    <li class="nav-item"><a href="#tab2" class="nav-link" data-toggle="tab"><i class="fa fa-edit"></i> A corriger ({{ corriger| length }})</a></li>
+                    <li class="nav-item"><a href="#tab3" class="nav-link" data-toggle="tab"><i class="fa fa-check" aria-hidden="true"></i> Succès ({{ success| length }})</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active " id="tab1">                            
+                        <div class="borderBox light bordered">
+                            <div class="row">
+                                <div class="col-md"> <h3 class="page-header">Les entrées à répartir ({{ eny_mvts| length }})</h3></div>
+                                <div class="col-md"><button class="btn btn-circle btn-outline-primary float-right"><i class="fa fa-check-square-o"></i> Démarrer l'opération (<span id="counter">0</span>)</button></div>
+                            </div>
+                            <div class="alert alert-info">
+                                <h4>
+                                    <i class="fa fa-info"></i> Avertissement!</h4> Prière de bien vérifier les informations ci-dessous avant de 
+                                    demarrer l'opération de dispatching.
+                            </div>
+                            <div class="row  mg-bottom-lg">
+                                <div class="col-md">
+                                    {% include "eny_dispatch/partial/repartir.html.twig" with {eny_mvts: eny_mvts} %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane " id="tab2">                            
+                        <div class="borderBox light bordered">
+                            <h3 class="page-header">Les entrées à corriger ({{ corriger| length }})</h3>
+                            <div class="alert alert-danger">
+                                <h4>
+                                    <i class="fa fa-info"></i> Avertissement!</h4> Parmis les lignes ci-dessous, il y a certaines 
+                                    lignes dont le nom ou le motif ne correspond à aucune information dans la base de données. Corriger-la et actualiser la page.
+                            </div>
+                            <div class="row  mg-bottom-lg">
+                                <div class="col-md">
+                                    {% include "eny_dispatch/partial/corriger.html.twig" with {eny_mvts: corriger} %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane " id="tab3">                            
+                        <div class="borderBox light bordered">
+                            <h3 class="page-header">Les entrées déjà reparties  ({{ success| length }})</h3>
+                            <div class="alert alert-success">
+                                <h4>
+                                    <i class="fa fa-info"></i> Félicitations!</h4> 
+                            </div>
+                            <div class="row  mg-bottom-lg">
+                                <div class="col-md">
+                                    {% include "eny_dispatch/partial/success.html.twig" with {eny_mvts: success} %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.21/af-2.3.5/b-1.6.2/b-colvis-1.6.2/b-flash-1.6.2/b-html5-1.6.2/b-print-1.6.2/r-2.2.5/sl-1.3.1/datatables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>  
+    
+    <script>
+    $(document).ready(function(){
+        var table = $("#entrees").DataTable({
+            "language": {
+                    "decimal":        "",
+                    "emptyTable":     "<h1>Aucune donnée disponible</h1>",
+                    "info":           "Afficher _START_ à _END_ sur _TOTAL_ ligne(s)",
+                    "infoEmpty":      "Afficher 0 à 0 sur 0 ligne(s)",
+                    "infoFiltered":   "(<b>Filtré de _MAX_ ligne(s) au total</b>)",
+                    "infoPostFix":    "",
+                    "thousands":      ",",
+                    "lengthMenu":     "Afficher _MENU_ lignes",
+                    "loadingRecords": "Chargement...",
+                    "processing":     "Traitement en cours...",
+                    "search":         "Recherche:",
+                    "zeroRecords":    "<h2>Aucun enregistrements correspondants trouvés</h2>",
+                    "paginate": {
+                        "first":      "Premier",
+                        "last":       "Dernier",
+                        "next":       "Suivant",
+                        "previous":   "Précédent"
+                    },
+                    "aria": {
+                        "sortAscending":  ": activate to sort column ascending",
+                        "sortDescending": ": activate to sort column descending"
+                    }
+                },
+                destroy: true,
+                responsive: true,
+                autoFill: true
+        })
+    })
+    </script>
+{% endblock %}

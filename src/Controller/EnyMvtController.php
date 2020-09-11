@@ -2,11 +2,14 @@
 
 namespace App\Controller;
 
+use App\Entity\EnyDispatch;
 use App\Entity\EnyMvt;
+use App\Entity\EnyRubriqueCpt;
 use App\Entity\EnyTypeMvt;
 use App\Form\EnyDepenseType;
 use App\Form\EnyMvtType;
 use App\Repository\EnyMvtRepository;
+use Doctrine\ORM\Query\Expr\Math;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -52,10 +55,41 @@ class EnyMvtController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
-            $enyMvt->setIdEtudiant($enyMvt->getStudent()->getNum())
-                    ->setAmountLetter($enyMvt->getAmount())
-                    ->setTypeMvt($entityManager->getRepository(EnyTypeMvt::class)->find(1));
+            $amountTyped = $enyMvt->getAmount();
 
+            $enyMvt->setIdEtudiant($enyMvt->getStudent()->getNum())
+                    ->setAmountLetter(\base64_encode($amountTyped))
+                    ->setReste($amountTyped)
+                    ->setTypeMvt($entityManager->getRepository(EnyTypeMvt::class)->find(1));
+            
+            $rubrique = $enyMvt->getRubrique();
+            $cpts = $rubrique->getEnyRubriqueCpts();
+
+            //Recupere le montant fixé pour la rubrique sélectionnée
+            $amountRubrique = $rubrique->getLastDetailsRubrique()->getAmount(); 
+            if ($amountRubrique >= $amountTyped) {
+                /**@var EnyRubriqueCpt $compte */
+                foreach ($cpts as $key => $compte) {
+                    $dispatch = new EnyDispatch();
+                    //Montant à  affecter au compte approprié
+                    $debit = round($amountRubrique * $compte->getPercent()/100,2);
+                    //La différence entre le montant entré et le montant à déduire pour affecter au cpt approprié
+                    $enyMvt->setReste($enyMvt->getReste() - $debit);
+
+                    $dispatch   ->setCompte($compte)
+                                ->setMvt($enyMvt)
+                                ->setAmount($debit)
+                                ->setSymbol(true)
+                                ->setAmountLetter(\base64_encode($enyMvt->getAmount()))
+                                ->setContent($enyMvt->getContent());
+                    $entityManager->persist($dispatch);    
+                }
+            } else {
+                $enyMvt->setContent("Le montant payé est supérieur au montant fixé pour cette rubrique (".$enyMvt->getRubrique()->getName()."), prière de procéder au dispatching manuel");
+            }
+
+            //Encrypte le montant restant après le dispatching du montant payé par l'étudiant
+            $enyMvt->setResteLetter(\base64_encode($enyMvt->getReste()));
             $entityManager->persist($enyMvt);
             $entityManager->flush();
 
@@ -79,11 +113,23 @@ class EnyMvtController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
             $entityManager = $this->getDoctrine()->getManager();
-            $enyMvt->setIdEtudiant('')
-                    ->setAmountLetter($enyMvt->getAmount())
-                    ->setTypeMvt($entityManager->getRepository(EnyTypeMvt::class)->find(2));
+
+            $enyMvt     ->setIdEtudiant('')
+                        ->setAmountLetter($enyMvt->getAmount())
+                        ->setTypeMvt($entityManager->getRepository(EnyTypeMvt::class)->find(2));
             $entityManager->persist($enyMvt);
+
+            $dispatch = new EnyDispatch();
+            $dispatch   ->setCompte($enyMvt->getCompte())
+                        ->setMvt($enyMvt)
+                        ->setAmount($enyMvt->getAmount())
+                        ->setSymbol(false)
+                        ->setAmountLetter(\base64_encode($enyMvt->getAmount()))
+                        ->setContent($enyMvt->getContent());
+
+            $entityManager->persist($dispatch);
             $entityManager->flush();
 
             return $this->redirectToRoute('eny_mvt_depenses');

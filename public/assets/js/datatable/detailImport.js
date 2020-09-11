@@ -1,7 +1,7 @@
 $(document).ready(function(){
     var url = window.location.href.split('/')
     var id = url[url.length-2];
-    var baseurl = "/api/import/"+id+"/datatable";
+    var baseurl = "/importation/api/"+id+"/datatable";
     var xmlhttp = new XMLHttpRequest();
 
     xmlhttp.open("GET",baseurl,true);
@@ -58,14 +58,16 @@ $(document).ready(function(){
                         return moment(row.datePaid).format('DD-MM-YYYY');
                     }
                     },
-                    {"title":"ID_Bank", "data":"event_no"},
+                    {"title":"N° Bank", "data":null, render: function(data, type, row) {
+                        return "<center>" + row.eventNo + "</center>"
+                    }},
                     {"title":"Motif", "data":"motif"},
                     {"title":"Noms", "data":"name"},
                     {"title":"Section", "data":null, render: function(data, type, row) {
                         return row.promotion + ' ' + row.section ; }
                     },
                     {"title":"Montant", "data":null, render: function ( data, type, row ) {
-                        return '<b>' + row.montant + ' ' + row.devise + '</b>';} 
+                        return '<b>' + row.amount + ' ' + row.devise.name + '</b>';} 
                     },
                     {"title": "Action", "data": null}
                 ],

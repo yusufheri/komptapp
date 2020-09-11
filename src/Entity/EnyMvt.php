@@ -131,6 +131,37 @@ class EnyMvt
      * */
     private $solde;
 
+    /**
+     * @ORM\Column(type="float", nullable=true)
+     */
+    private $reste;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $reste_letter;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=EnyTranche::class, inversedBy="enyMvts")
+     */
+    private $tranche;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $manual;
+
+    /**
+     * @ORM\OneToOne(targetEntity=EnyDetailImport::class, cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $detailImport;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $dispatch;
+
     public function __construct()
     {
         $this->enyDispatches = new ArrayCollection();
@@ -404,6 +435,11 @@ class EnyMvt
         
     }
 
+    public function getPromotion(): ?string
+    {
+        return (!is_null($this->student)) ? $this->detailImport->getPromotion().' '.$this->detailImport->getSection(): null;
+    }
+
     /**
      * Get the value of solde
      */ 
@@ -420,6 +456,78 @@ class EnyMvt
     public function setSolde($solde)
     {
         $this->solde = $solde;
+
+        return $this;
+    }
+
+    public function getReste(): ?float
+    {
+        return $this->reste;
+    }
+
+    public function setReste(?float $reste): self
+    {
+        $this->reste = $reste;
+
+        return $this;
+    }
+
+    public function getResteLetter(): ?string
+    {
+        return $this->reste_letter;
+    }
+
+    public function setResteLetter(?string $reste_letter): self
+    {
+        $this->reste_letter = $reste_letter;
+
+        return $this;
+    }
+
+    public function getTranche(): ?EnyTranche
+    {
+        return $this->tranche;
+    }
+
+    public function setTranche(?EnyTranche $tranche): self
+    {
+        $this->tranche = $tranche;
+
+        return $this;
+    }
+
+    public function getManual(): ?bool
+    {
+        return $this->manual;
+    }
+
+    public function setManual(bool $manual): self
+    {
+        $this->manual = $manual;
+
+        return $this;
+    }
+
+    public function getDetailImport(): ?EnyDetailImport
+    {
+        return $this->detailImport;
+    }
+
+    public function setDetailImport(EnyDetailImport $detailImport): self
+    {
+        $this->detailImport = $detailImport;
+
+        return $this;
+    }
+
+    public function getDispatch(): ?bool
+    {
+        return $this->dispatch;
+    }
+
+    public function setDispatch(?bool $dispatch): self
+    {
+        $this->dispatch = $dispatch;
 
         return $this;
     }

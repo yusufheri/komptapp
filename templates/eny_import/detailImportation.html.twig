@@ -11,7 +11,8 @@
     </style>
 {% endblock %}
 {% block body %}
-    {% include "home/partials/page-bar.html.twig" with {title : "Détails du fichier", bigTitle: "Détails du fichier : " ~ importFile.displayName ~ "  (" ~ importFile.fromAt | date('d-m-Y') ~ " au " ~ importFile.toAt | date('d-m-Y') ~ ")"  } %}
+    {% include "home/partials/page-bar.html.twig" with {title : "Importation,admin_importation_index:Détails du fichier", bigTitle: "Détails du fichier : " ~ importFile.displayName ~ "  (" ~ importFile.fromAt | date('d-m-Y') ~ " au " ~ importFile.toAt | date('d-m-Y') ~ ")"  } %}
+    
     <div class="container-fluid">
         
         <div class="row">

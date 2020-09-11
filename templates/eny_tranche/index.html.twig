@@ -1,0 +1,96 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tranche::komptApp{% endblock %}
+
+{% block stylesheets %}    
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.21/af-2.3.5/b-1.6.2/b-colvis-1.6.2/b-flash-1.6.2/b-html5-1.6.2/b-print-1.6.2/r-2.2.5/sl-1.3.1/datatables.min.css"/>
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-6"><h1>Tranches</h1></div>
+        <div class="col-md-6"><a href="{{ path('eny_tranche_new') }}" class="btn btn-outline-primary mt-3 mb-3 float-right"><i class="fa fa-plus-circle    "></i> Nouveau libellé</a></div>
+    </div>
+
+    <table class="table table-striped custom-table table-hover" id="tranche">
+        <thead>
+            <tr>
+                <th>N°</th>
+                <th>Enregistré</th>
+                <th>Code</th>
+                <th>Libellé</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% set i = 0 %}
+        {% for eny_tranche in eny_tranches %}
+            <tr>
+                {% set i = i + 1 %}
+                <td>{{ i }}</td>
+                <td>{{ eny_tranche.createdAt ? eny_tranche.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ eny_tranche.code }}</td>
+                <td>{{ eny_tranche.name }}</td>
+                <td>
+                    <a href="{{ path('eny_tranche_show', {'id': eny_tranche.id}) }}" class="btn btn-outline-info"><i class="fa fa-eye" aria-hidden="true"></i> </a>
+                    <a href="{{ path('eny_tranche_edit', {'id': eny_tranche.id}) }}" class="btn btn-outline-primary"><i class="fa fa-edit" aria-hidden="true"></i></a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <th>N°</th>
+                <th>Enregistré</th>
+                <th>Code</th>
+                <th>Libellé</th>
+                <th></th>
+            </tr>
+        </tfoot>
+    </table>
+
+{% endblock %}
+
+
+{% block javascripts %}
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.21/af-2.3.5/b-1.6.2/b-colvis-1.6.2/b-flash-1.6.2/b-html5-1.6.2/b-print-1.6.2/r-2.2.5/sl-1.3.1/datatables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>  
+    
+    <script>
+    $(document).ready(function(){
+        var table = $("#tranche").DataTable({
+            "language": {
+                    "decimal":        "",
+                    "emptyTable":     "<h1>Aucune donnée disponible</h1>",
+                    "info":           "Afficher _START_ à _END_ sur _TOTAL_ ligne(s)",
+                    "infoEmpty":      "Afficher 0 à 0 sur 0 ligne(s)",
+                    "infoFiltered":   "(<b>Filtré de _MAX_ ligne(s) au total</b>)",
+                    "infoPostFix":    "",
+                    "thousands":      ",",
+                    "lengthMenu":     "Afficher _MENU_ lignes",
+                    "loadingRecords": "Chargement...",
+                    "processing":     "Traitement en cours...",
+                    "search":         "Recherche:",
+                    "zeroRecords":    "<h2>Aucun enregistrements correspondants trouvés</h2>",
+                    "paginate": {
+                        "first":      "Premier",
+                        "last":       "Dernier",
+                        "next":       "Suivant",
+                        "previous":   "Précédent"
+                    },
+                    "aria": {
+                        "sortAscending":  ": activate to sort column ascending",
+                        "sortDescending": ": activate to sort column descending"
+                    }
+                },
+                destroy: true,
+                responsive: true,
+                autoFill: true
+        })
+    })
+    </script>
+{% endblock %}
+

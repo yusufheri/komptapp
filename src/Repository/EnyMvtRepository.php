@@ -19,6 +19,73 @@ class EnyMvtRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, EnyMvt::class);
     }
+    
+
+    public function success(EnyTypeMvt $typeMvt): array
+    {
+        $q = $this->createQueryBuilder('e');
+        return      $q
+                    ->select('d', 'e')
+                    ->join('e.devise', 'd')                   
+                    ->addSelect('r', 'e')
+                    ->join('e.rubrique', 'r')
+                    ->addSelect('i', 'e')
+                    ->join('e.student', 'i')
+                    //->addSelect('s', 'i')
+                    //->join('i.num_eny_etudiant', 's')
+                    ->andWhere('e.typeMvt = :val')
+                    ->setParameter('val', $typeMvt)
+                    ->andWhere('e.success = :val2')
+                    ->setParameter('val2', true)
+                    ->andWhere('e.dispatch = :val3')
+                    ->setParameter('val3', true)
+                    ->orderBy('e.createdAt', 'DESC')
+                    ->getQuery()
+                    ->getResult()
+                    ;
+    }
+
+    public function corriger(EnyTypeMvt $typeMvt): array
+    {
+        
+        $q = $this->createQueryBuilder('e');
+        return      $q
+                    ->select('d', 'e')
+                    ->join('e.devise', 'd') 
+                    ->andWhere('e.typeMvt = :val')
+                    ->setParameter('val', $typeMvt)
+                    ->andWhere('e.error = :val2')
+                    ->setParameter('val2', true)
+                    ->andWhere($q->expr()->isNull('e.success'))
+                    ->orderBy('e.createdAt', 'DESC')
+                    ->getQuery()
+                    ->getResult()
+                    ;
+    }
+
+    public function dispatch(EnyTypeMvt $typeMvt): array
+    {
+        $q = $this->createQueryBuilder('e');
+        return      $q
+                    ->select('d', 'e')
+                    ->join('e.devise', 'd')                   
+                    ->addSelect('r', 'e')
+                    ->join('e.rubrique', 'r')
+                    ->addSelect('i', 'e')
+                    ->join('e.student', 'i')
+                    //->addSelect('s', 'i')
+                    //->join('i.num_eny_etudiant', 's')
+                    ->andWhere('e.typeMvt = :val')
+                    ->setParameter('val', $typeMvt)
+                    ->andWhere('e.success = :val2')
+                    ->setParameter('val2', true)
+                    ->andWhere($q->expr()->isNull('e.dispatch'))
+                    ->andWhere($q->expr()->isNull('e.error'))
+                    ->orderBy('e.createdAt', 'DESC')
+                    ->getQuery()
+                    ->getResult()
+                    ;
+    }
 
     /**
      * Permet de retourner toutes les entrées enregistrées
@@ -31,8 +98,8 @@ class EnyMvtRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('e')
                     ->select('d', 'e')
                     ->join('e.devise', 'd')                   
-                    ->addSelect('r', 'e')
-                    ->join('e.rubrique', 'r')
+                    //->addSelect('r', 'e')
+                    //->join('e.rubrique', 'r')
                     //->addSelect('i', 'e')
                     //->join('e.student', 'i')
                     //->addSelect('s', 'i')

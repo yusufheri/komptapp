@@ -9,6 +9,7 @@ use App\Entity\DetailRubrique;
 use App\Entity\EnyRubriqueCpt;
 use App\Entity\RubriqueCompte;
 use App\Entity\EnyDetailRubrique;
+use App\Entity\EnyMotif;
 use App\Repository\EnyCompteRepository;
 use App\Repository\EnyRubriqueCptRepository;
 use App\Repository\EnyRubriqueRepository;
@@ -55,9 +56,12 @@ class EnyRubriqueController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) 
         {
             if ($rubrique->getEnyMotifs()->count() > 0) {
+                /**@var EnyMotif $motif */
                 foreach ($rubrique->getEnyMotifs() as $key => $motif) {
-                    $motif->setRubrique($rubrique);
-                    $manager->persist($motif);
+                    //$motif->addEnyRubrique($rubrique);
+                    //$motif->setRubrique($rubrique);
+                    $rubrique->addMotif($motif);
+                    //$manager->persist($motif);
                 }
             }
 
@@ -146,8 +150,8 @@ class EnyRubriqueController extends AbstractController
      * @return Response
      */
     function create_compte(Request $request, ValidatorInterface $validator, 
-    LoggerInterface $logger, EntityManagerInterface $manager, 
-    EnyRubrique $rubrique, EnyCompteRepository $compteRepository)
+                            LoggerInterface $logger, EntityManagerInterface $manager,  
+                            EnyRubrique $rubrique, EnyCompteRepository $compteRepository)
     {
         if($request->isXmlHttpRequest()) {
             
@@ -166,13 +170,16 @@ class EnyRubriqueController extends AbstractController
                     ['content-type' => 'text/plain']);
             }
 
-            //dd($request->get("rubrique"));
+            //  dd($request->request->get("tranche1"));
             $rubriqueSave = $request->get("rubrique");
             $sous_rubrique = $request->request->get("sous_rubrique");
             $compte = $request->request->get("compte");
-            $percent = $request->request->get("percent");
-            $amount = $request->request->get("amount");
-            $content = $request->request->get("content");
+            $percent = trim($request->request->get("percent"));
+            $amount = trim($request->request->get("amount"));
+            $content = trim($request->request->get("content"));
+
+            $tranche1 = trim($request->request->get("tranche1"));
+            $tranche2 = trim($request->request->get("tranche2"));
 
             $input = [
                 'rubrique' => $rubriqueSave->getId(),
@@ -215,37 +222,42 @@ class EnyRubriqueController extends AbstractController
                 $compte_rubrique->setSrubrique($sous_rubrique);
                 $compte_rubrique->setContent($content);
                 $compte_rubrique->setDevise($rubrique->getLastDetailsRubrique()->getDevise());
+                $compte_rubrique->setTrancheOne( empty($tranche1)? null : $tranche1 );
+                $compte_rubrique->setTrancheTwo( empty($tranche2)? null : $tranche2 );
 
-                if(!($rubrique->MayBeAddRubriqueCompte($compte_rubrique)))
+                if ( !($rubrique->existRubriqueCompte($compte_rubrique)) )
                 {
-                    $manager->persist($compte_rubrique);
-                    $manager->persist($rubrique);
-                    $manager->flush();
+                    if(($rubrique->MayBeAddRubriqueCompte($compte_rubrique)))
+                    {
+                        $manager->persist($compte_rubrique);
+                        $manager->persist($rubrique);
+                        $manager->flush();
 
-                    /*return $this->render('params/partials/_edit_comptes.html.twig', [
-                        'rubrique' => $rubrique_result,
-                        'response' => 'Un compte a été ajouté à cette rubrique avec succès'
-                    ]);*/
-                    return new Response("Un compte a été ajouté à cette rubrique avec succès", Response::HTTP_OK,
-                        ['content-type' => 'text/plain']); 
-                } else {
-                    $solde = 0;
-                    $amount = $rubrique->getLastDetailsRubrique()->getAmount();
-                    $devise = $rubrique->getLastDetailsRubrique()->getDevise()->getName();
-                    foreach($rubrique->getEnyRubriqueCpts() as $cpt){
-                        $solde += $cpt->getAmount();
+                        return new Response("Un compte a été ajouté à cette rubrique avec succès", Response::HTTP_OK,
+                            ['content-type' => 'text/plain']); 
+                    } else {
+                        $solde = 0;
+                        $amount = $rubrique->getLastDetailsRubrique()->getAmount();
+                        $devise = $rubrique->getLastDetailsRubrique()->getDevise()->getName();
+                        foreach($rubrique->getEnyRubriqueCpts() as $cpt){
+                            $solde += $cpt->getAmount();
+                        }
+                        $diff = $amount - $solde;
+                        return new Response(
+                            '<div class="alert alert-warning">
+                                <h4>La somme des montants répartis ne peuvent pas être supérieur au solde de la rubrique (<b>'
+                                .$amount.' '.$devise. '</b> ), il y a déjà (<b>'.$solde.' '.$devise.'</b>) répartis dans d autres comptes et il ne reste que (<b>'.$diff.' '.$devise .'</b>) à répartir.</h4></div>', 
+                            Response::HTTP_OK, ['content-type' => 'text/plain']);
                     }
-                    $diff = $amount - $solde;
+                } else {
                     return new Response(
-                        '<div class="alert alert-warning">
-                            <h4>La somme des montants répartis ne peuvent pas être supérieur au solde de la rubrique (<b>'
-                            .$amount.' '.$devise.
-                            '</b> ), il y a déjà (<b>'.$solde.' '.$devise.'</b>) répartis dans d autres comptes et il ne reste que (<b>'.$diff.' '.$devise .'</b>) à répartir.</h4></div>', 
+                        '<div class="alert alert-danger">
+                            <h4>Ce compte est déjà rattraché à cette rubrique</h4>
+                            <p>Prière de vérifier sur la liste ci-dessous</p>
+                        </div>', 
                         Response::HTTP_OK,
                     ['content-type' => 'text/plain']);
                 }
-
-
                 
             }
         }

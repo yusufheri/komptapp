@@ -48,6 +48,7 @@ class Devise
      * @ORM\Column(name="name", type="string", length=255, nullable=false)
      * @Groups("rubrique:read")
      * @Groups("import:read")
+     * @Groups("detail:read")
      */
     private $name;
 

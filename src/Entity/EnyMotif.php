@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\EnyMotifRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\ORM\Mapping as ORM;
@@ -67,9 +69,14 @@ class EnyMotif
     private $idDetailRubrique;
 
     /**
-     * @ORM\ManyToOne(targetEntity=EnyRubrique::class, inversedBy="enyMotifs")
+     * @ORM\ManyToMany(targetEntity=EnyRubrique::class, mappedBy="motifs")
      */
-    private $rubrique;
+    private $enyRubriques;
+
+    public function __construct()
+    {
+        $this->enyRubriques = new ArrayCollection();
+    }    
 
     /**
      * @ORM\PrePersist
@@ -158,15 +165,32 @@ class EnyMotif
         return $this;
     }
 
-    public function getRubrique(): ?EnyRubrique
+    /**
+     * @return Collection|EnyRubrique[]
+     */
+    public function getEnyRubriques(): Collection
     {
-        return $this->rubrique;
+        return $this->enyRubriques;
     }
 
-    public function setRubrique(?EnyRubrique $rubrique): self
+    public function addEnyRubrique(EnyRubrique $enyRubrique): self
     {
-        $this->rubrique = $rubrique;
+        if (!$this->enyRubriques->contains($enyRubrique)) {
+            $this->enyRubriques[] = $enyRubrique;
+            $enyRubrique->addMotif($this);
+        }
 
         return $this;
     }
+
+    public function removeEnyRubrique(EnyRubrique $enyRubrique): self
+    {
+        if ($this->enyRubriques->contains($enyRubrique)) {
+            $this->enyRubriques->removeElement($enyRubrique);
+            $enyRubrique->removeMotif($this);
+        }
+
+        return $this;
+    }
+
 }

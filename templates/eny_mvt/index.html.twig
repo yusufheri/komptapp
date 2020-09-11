@@ -7,9 +7,10 @@
 {% endblock %}
 
 {% block body %}
+    {% include "home/partials/page-bar.html.twig" with {title : "Les entrées", bigTitle: "Historique des entrées"  } %}
     <div class="row">
     {% set new = (title == "Historiques des Depenses")?'eny_mvt_depenses_new':'eny_mvt_entry_new' %}
-        <div class="col-md-6"><h1>{{title}}</h1></div>
+        <div class="col-md-6"></div>
         <div class="col-md-6"><a href="{{ path(new) }}" class="btn btn-outline-primary mt-3 mb-3 float-right"><i class="fa fa-plus-circle    "></i> Nouvelle opération</a></div>
     </div>
     <div class="table-wrap">
@@ -20,6 +21,7 @@
                         <th>N°</th>
                         <th>Date</th>
                         <th>Etudiant</th> 
+                        <th>Promotion</th> 
                         <th>Motif</th>                               
                         <th>Montant</th>
                         <th>Source</th>
@@ -29,16 +31,21 @@
                 <tbody>
                 {% set i = 1 %}
                 {% for eny_mvt in eny_mvts %}
-                    <tr>
+                    <tr {% if eny_mvt.error == true or  not eny_mvt.rubrique or not eny_mvt.etudiant %}style="color: red;"{% endif %} >
                         <td>{{ i }}</td>
-                        <td>{{ eny_mvt.paidAt ? eny_mvt.paidAt|date('Y-m-d H:i:s') : '' }}</td>
-                        <td class="text text-primary">{{ eny_mvt.etudiant ? eny_mvt.etudiant : '' }}</td>         
-                        <td>{{ eny_mvt.rubrique.name }}</td>         
+                        <td>{{ eny_mvt.paidAt ? eny_mvt.paidAt|date('Y-m-d h:m') : '' }}</td>
+                        <td><b>{{ eny_mvt.etudiant ? eny_mvt.etudiant : '' }}</b></td>         
+                        <td><b>{{ eny_mvt.etudiant ? eny_mvt.promotion: '' }}</b></td>         
+                        <td>{{ eny_mvt.rubrique ? eny_mvt.rubrique.name : '' }}</td>         
                         <td><b>{{ eny_mvt.amount |number_format(2,',',' ') ~ " " ~ eny_mvt.devise.name }}</b></td>
                         <td>{{ eny_mvt.fromBank ? 'Banque' : 'Caisse' }}</td>
-                        <td>                            
-                            <a href="{{ path('eny_mvt_show', {'id': eny_mvt.id}) }}" class="btn btn-outline-info"><i class="fa fa-eye" aria-hidden="true"></i> </a>
-                            <a href="{{ path('eny_mvt_edit', {'id': eny_mvt.id}) }}" class="btn btn-outline-danger"><i class="fa fa-edit" aria-hidden="true"></i></a>
+                        <td>
+                        {% if eny_mvt.rubrique and eny_mvt.etudiant %}
+                            <a href="{{ path('eny_mvt_show', {'id': eny_mvt.id}) }}" class="btn btn-outline-primary "><i class="fa fa-eye" aria-hidden="true"></i></a>
+                        {% else %}
+                            <a href="{{ path('eny_mvt_edit', {'id': eny_mvt.id}) }}" class="btn btn-outline-danger "><i class="fa fa-edit" aria-hidden="true"></i></a>
+                        {% endif %}
+                            
                         </td>
                     </tr>
                     {% set i = i + 1 %}
@@ -49,6 +56,7 @@
                         <th>N°</th>
                         <th>Date</th>
                         <th>Etudiant</th> 
+                        <th>Promotion</th>
                         <th>Motif</th>                               
                         <th>Montant</th>
                         <th>Source</th>

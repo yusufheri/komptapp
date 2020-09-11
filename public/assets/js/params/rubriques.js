@@ -51,26 +51,32 @@ $(document).ready(function(){
                         {"title": "Libellé", "data": null, render: function(data, type, row) {
                             return '<span class="text-primary">' + data.name + '</span>';
                         }},
-                        {"title": "Montant", "data": null, render: function(data, type, row) {
-                            //console.log(data.detailRubriques.length);
+                        {"title": "Montant (restant à repartir)", "data": null, render: function(data, type, row) {
+                            //console.log(data.enyDetailRubriques);
                             
                             let taille = data.enyDetailRubriques.length-1;
-                            let repartion_comptes = 0;
-                            let amount = data.enyDetailRubriques[taille].amount;
-                            let devise = data.enyDetailRubriques[taille].devise.name;
-                            
-                            row.enyRubriqueCpts.forEach(elt => {
-                                if(elt.deletedAt == null) repartion_comptes += elt.amount;
-                            })
+                            let amount = 0 ; let reste = null ;
+                            if (taille > -1) {
+                                
+                                amount = data.enyDetailRubriques[taille].amount;
+                                let repartion_comptes = 0;
+                                let devise = data.enyDetailRubriques[taille].devise.name;
+                                
+                                row.enyRubriqueCpts.forEach(elt => {
+                                    if(elt.deletedAt == null) repartion_comptes += elt.amount;
+                                })
 
-                            let reste = amount - repartion_comptes;
+                                reste = amount - repartion_comptes;
+                                
+                                reste = reste.toFixed(2);
+                                
+                                amount = new Intl.NumberFormat("de-DE", {style: "currency", currency: devise.toString()}).format(amount)
+                                reste = new Intl.NumberFormat("de-DE", {style: "currency", currency: devise.toString()}).format(reste)
                             
-                            reste = reste.toFixed(2);
-                            
-                            amount = new Intl.NumberFormat("de-DE", {style: "currency", currency: devise.toString()}).format(amount)
-                            reste = new Intl.NumberFormat("de-DE", {style: "currency", currency: devise.toString()}).format(reste)
-
-                            
+                            } else {
+                                return '<span class="float-right"> </span>'
+                            }                            
+                        
                             if (reste == 0 || reste =="0,00 CDF") {
                                 return '<span class="float-right"><b> '+ amount.toString() + '</b></span>'
                             } else {
@@ -83,7 +89,10 @@ $(document).ready(function(){
                             
                             let taille = data.enyDetailRubriques.length-1;
                             let repartion_comptes = 0;
-                            let amount = data.enyDetailRubriques[taille].amount;
+                            let amount = 0;
+
+                            if (taille >  -1 ) amount = data.enyDetailRubriques[taille].amount;
+
                             var count_rubriqueComptes = 0;
                             row.enyRubriqueCpts.forEach(elt => {
                                 if(elt.deletedAt == null) {repartion_comptes += elt.amount;count_rubriqueComptes++;}

@@ -1,0 +1,48 @@
+<div class="table-wrap">
+    <div class="table-responsive">
+        <table class="table table-striped custom-table table-hover" id="entrees">
+            <thead>
+                <tr>
+                    <th><input id="checkbox-all" type="checkbox" ></th>
+                    <th>Date</th>
+                    <th>Etudiant</th> 
+                    <th>Promotion</th> 
+                    <th>Motif</th>                               
+                    <th>Montant</th>
+                    <th>Source</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% set i = 0 %}
+            {% for eny_mvt in eny_mvts %}
+                {% set i = i + 1 %}
+                <tr>
+                    <td class="text-center">{{i}} </td>
+                    <td>{{ eny_mvt.paidAt ? eny_mvt.paidAt|date('Y-m-d h:m') : '' }}</td>
+                    <td><b>{{ eny_mvt.etudiant ? eny_mvt.etudiant : '' }}</b></td>         
+                    <td><b>{{ eny_mvt.etudiant ? eny_mvt.promotion: '' }}</b></td>         
+                    <td>{{ eny_mvt.rubrique ? eny_mvt.rubrique.name : '' }}</td>         
+                    <td><b>{{ eny_mvt.amount |number_format(2,',',' ') ~ " " ~ eny_mvt.devise.name }}</b></td>
+                    <td>{{ eny_mvt.fromBank ? 'Banque' : 'Caisse' }}</td>
+                    <td>
+                        <a href="{{ path('eny_mvt_show', {'id': eny_mvt.id}) }}" class="btn btn-circle btn-outline-primary "><i class="fa fa-eye" aria-hidden="true"></i></a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>N°</th>
+                    <th>Date</th>
+                    <th>Etudiant</th> 
+                    <th>Promotion</th>
+                    <th>Motif</th>                               
+                    <th>Montant</th>
+                    <th>Source</th>
+                    <th></th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,49 @@
+<div class="table-wrap">
+    <div class="table-responsive">
+        <table class="table table-striped custom-table table-hover" id="entrees">
+            <thead>
+                <tr>
+                    <th><input id="checkbox-all" type="checkbox" ></th>
+                    <th>Date</th>
+                    <th>Etudiant</th> 
+                    <th>Promotion</th> 
+                    <th>Motif</th>                               
+                    <th>Montant</th>
+                    <th>Source</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% set i = 1 %}
+            {% for eny_mvt in eny_mvts %}
+                <tr>
+                    <td>
+                        <input id="checkbox-{{eny_mvt.id}}" type="checkbox"  data-id="{{ eny_mvt.id }}">
+                    </td>
+                    <td>{{ eny_mvt.paidAt ? eny_mvt.paidAt|date('Y-m-d h:m') : '' }}</td>
+                    <td><b>{{ eny_mvt.etudiant ? eny_mvt.etudiant : '' }}</b></td>         
+                    <td><b>{{ eny_mvt.etudiant ? eny_mvt.promotion: '' }}</b></td>         
+                    <td>{{ eny_mvt.rubrique ? eny_mvt.rubrique.name : '' }}</td>         
+                    <td><b>{{ eny_mvt.amount |number_format(2,',',' ') ~ " " ~ eny_mvt.devise.name }}</b></td>
+                    <td>{{ eny_mvt.fromBank ? 'Banque' : 'Caisse' }}</td>
+                    <td>
+                        <a href="{{ path('eny_mvt_edit', {'id': eny_mvt.id}) }}" class="btn btn-outline-danger "><i class="fa fa-edit" aria-hidden="true"></i></a>                                                      
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>N°</th>
+                    <th>Date</th>
+                    <th>Etudiant</th> 
+                    <th>Promotion</th>
+                    <th>Motif</th>                               
+                    <th>Montant</th>
+                    <th>Source</th>
+                    <th></th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>

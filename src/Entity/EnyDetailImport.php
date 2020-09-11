@@ -168,7 +168,7 @@ class EnyDetailImport
      * @ORM\ManyToOne(targetEntity=EnyRubrique::class, inversedBy="enyDetailImports")
      */
     private $enyRubrique;
-
+    
     private $idDevise;
 
     public function __construct(array $array) {
@@ -182,22 +182,22 @@ class EnyDetailImport
         $section_orientation_promo = explode("/", trim($array[3 + $step])) ;
         $sexe_cat_tranche =  explode("/",trim($array[6 + $step]));
 
-        $this->datePaid         = DetailImport::formatDate(trim($array[0]));
-        $this->eventNo          = trim($array[1]);
-        $this->name             = trim($array[2 + $step]);
-        $this->section          = $section_orientation_promo[0];
-        $this->orientation      = $section_orientation_promo[1];
-        $this->promotion        = $section_orientation_promo[2];
-        $this->amount          = explode(".",trim($array[4 + $step]))[0];
+        $this->datePaid           = DetailImport::formatDate(trim($array[0]));
+        $this->eventNo            = trim($array[1]);
+        $this->name               = trim($array[2 + $step]);
+        $this->section            = trim($section_orientation_promo[0]);
+        $this->orientation        = trim($section_orientation_promo[1]);
+        $this->promotion          = trim($section_orientation_promo[2]);
+        $this->amount             = explode(".",trim($array[4 + $step]))[0];
         $this->idDevise           = trim($array[5 + $step]);
         
-        $this->motif            = trim($array[7 + $step]);
+        $this->motif              = trim($array[7 + $step]);
 
-        $this->sexe = $sexe_cat_tranche[0];
-        $this->categorie = $sexe_cat_tranche[1];
-        $this->tranche = $sexe_cat_tranche[2];
+        $this->sexe               = trim($sexe_cat_tranche[0]);
+        $this->categorie          = trim($sexe_cat_tranche[1]);
+        $this->tranche            = trim($sexe_cat_tranche[2]);
         
-        $this->amount = (float) str_replace([" ", ","], "", $this->amount);
+        $this->amount             = (float) str_replace([" ", ","], "", $this->amount);
         //dd($th)
     }
 
@@ -493,6 +493,7 @@ class EnyDetailImport
     public function getIdDevise()
     {
         return $this->idDevise;
+        
     }
 
     /**

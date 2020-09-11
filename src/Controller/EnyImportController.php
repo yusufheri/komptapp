@@ -4,28 +4,33 @@ namespace App\Controller;
 
 use Exception;
 use App\Entity\Devise;
+use App\Entity\EnyMvt;
 use App\Form\ImportType;
 use App\Entity\EnyImport;
+use App\Entity\EnySection;
+use App\Entity\EnyTypeMvt;
+use App\Entity\EnyDispatch;
+use App\Entity\EnyEtudiant;
+use App\Entity\EnyRubrique;
 use App\Form\EnyImportType;
 use App\Entity\DetailImport;
 use App\Entity\EnyAnneeAcad;
+use App\Entity\EnyPromotion;
 use App\Entity\EnyBankingInfo;
 use App\Entity\EnyDepartement;
-use App\Entity\EnyDetailImport;
-use App\Entity\EnyEtudiant;
 use App\Entity\EnyInscription;
-use App\Entity\EnyMvt;
+use App\Entity\EnyRubriqueCpt;
+use App\Entity\EnyDetailImport;
 use App\Entity\EnyPromoOrganisee;
-use App\Entity\EnyPromotion;
-use App\Entity\EnyRubrique;
-use App\Entity\EnySection;
-use App\Entity\EnyTypeMvt;
+use App\Entity\EnyTranche;
 use App\Repository\EnyImportRepository;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Repository\EnyBankingInfoRepository;
 use App\Repository\EnyEtudiantRepository;
 use App\Repository\EnyRubriqueRepository;
+use App\Repository\EnyBankingInfoRepository;
+use App\Repository\EnyDetailImportRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -118,7 +123,8 @@ class EnyImportController extends AbstractController
      * @return Response|string
      */
     public function new_single_file(Request $request, EnyBankingInfoRepository $enyBankingInfoRepository, 
-    EnyRubriqueRepository $enyRubriqueRepository, EnyEtudiantRepository $enyEtudiantRepository)
+                                    EnyRubriqueRepository $enyRubriqueRepository, 
+                                    EnyEtudiantRepository $enyEtudiantRepository)
     {
         $data = $request->files->get('eny_import');
 
@@ -157,7 +163,7 @@ class EnyImportController extends AbstractController
                         $to = trim($dateFromTo[3]);
                         $form = trim($dateFromTo[2]);
                         
-                        /** Permet de retrouver le nuéro du cpte bancaire associé à ce fichier*/
+                        /** Permet de retrouver le numéro du cpte bancaire associé à ce fichier*/
                         $account_number = trim(trim(trim(explode(":",$data[0][0])[1], '-CDF'),'-USD'));
                         
                         $bankingInfos = $enyBankingInfoRepository->findBy(["account_number" => $account_number]);
@@ -183,27 +189,50 @@ class EnyImportController extends AbstractController
 
                                 $detail = new EnyDetailImport($row);
 
-                                $rubrique = $this->getRubrique($rubriques, trim($detail->getMotif()));
+                                $rubrique = $this->getRubrique($rubriques, trim($detail->getMotif()), $detail->getCategorie(), $detail->getPromotion(), $detail->getSection());
                                 $etudiant = $this->getEtudiant($etudiants,$detail->getName());
                                 $devise = $this->getDoctrine()->getManager()->getRepository(Devise::class)->findBy(["name" => $detail->getIdDevise()])[0];
                                 $inscription = $this->getIdInscription($etudiants, $detail->getName(), $detail->getMotif(), $detail->getPromotion(), $detail->getSection(), $detail->getOrientation());
                                 
+                                //dump($etudiant);
+                                //dump($rubrique);
+
                                 $mvt = new EnyMvt();
+                                $mvt->setDetailImport($detail);
                                 $mvt->setRubrique($rubrique);
                                 $mvt->setIdEtudiant((is_null($etudiant))?'': $etudiant->getId());
                                 $mvt->setPaidAt($detail->getDatePaid());
                                 $mvt->setTypeMvt($this->getDoctrine()->getManager()->getRepository(EnyTypeMvt::class)->find(1));
                                 $mvt->setDevise($devise);
                                 $mvt->setAmount($detail->getAmount());
-                                $mvt->setAmountLetter($detail->getAmount());
+                                $mvt->setAmountLetter(base64_encode($detail->getAmount()));
                                 $mvt->setFromBank(true);
                                 $mvt->setStudent($inscription);
-                                $this->manager->persist($mvt);
-
+                                $mvt->setTranche($this->getDoctrine()->getManager()->getRepository(EnyTranche::class)->find($detail->getTranche()));;                               
+                                
+                                if (is_null($rubrique) && is_null($inscription))
+                                {
+                                    $mvt->setError(true);
+                                    $mvt->setErrorMessage("Le nom et le motif attachés à cette opération sont introuvables");
+                                } else if (is_null($rubrique) && ! (is_null($inscription)))
+                                {
+                                    $mvt->setError(true);
+                                    $mvt->setErrorMessage("Le motif attaché avec cette information n'est pas trouvé dans la base de données");
+                                } else if (!is_null($rubrique) &&  (is_null($inscription)))
+                                {
+                                    $mvt->setError(true);
+                                    $mvt->setErrorMessage("Le nom de l'étudiant ne correspond à aucun nom dans la base de données");
+                                } else {
+                                    $mvt->setSuccess(true);
+                                }
+                                
                                 $detail->setEnyImport($importFile);
                                 $detail->setDevise($devise);
                                 $detail->setEnyRubrique($rubrique);
                                 $detail->setEnyEtudiant((is_null($etudiant))? ( (is_null($inscription))? $etudiant : $inscription->getNumEnyEtudiant() )  : $etudiant);
+                                
+                                if (is_null($mvt->getManual())) $mvt->setManual(false);
+                                $this->manager->persist($mvt);
                                 $this->manager->persist($detail);
 
                             }
@@ -389,7 +418,7 @@ class EnyImportController extends AbstractController
     }
 
     /**
-     * retourner toutes les lignes du fichier passé en argument
+     * retourner tous les fichiers importés 
      * @Route("api/datatable", name="datatableFilesUploaded")
      * @param ImportFiles $importFile
      */
@@ -403,17 +432,35 @@ class EnyImportController extends AbstractController
      * @Route("api/{id}/datatable", name="datatable")
      * @param ImportFiles $importFile
      */
-    public function dataTable(EnyImport $importFile)
+    public function dataTable(EnyImport $importFile, EnyDetailImportRepository $repo)
     {
-        $repo = $this->getDoctrine()->getManager()->getRepository(EnyDetailImport::class);
-        return  $this->json($repo->findBy(['importFile' => $importFile]), 200, [], ['groups' => 'detail:read']);
+        //$repo = $this->getDoctrine()->getManager()->getRepository(EnyDetailImport::class);
+        return  $this->json($repo->findBy(['enyImport' => $importFile]), 200, [], ['groups' => 'detail:read']);
     }
 
-    public function getRubrique(array $rubriques, string $motif):?EnyRubrique
+    /**
+     * Undocumented function
+     *
+     * @param EnyRubrique[] $rubriques
+     * @param string $motif
+     * @return EnyRubrique|null
+     */
+    public function getRubrique($rubriques, string $motif, string $categorie, string $promotion , string $section):?EnyRubrique
     {
-        for ($i=0; $i < count($rubriques) -1; $i++) { 
-            foreach ($rubriques[$i]->getEnyMotifs() as $key => $objMotif) {
-                if ($objMotif->getName() == $motif) return $rubriques[$i];
+        for ($i=0; $i < count($rubriques); $i++) { 
+            $rubrique = $rubriques[$i];
+            foreach ($rubrique->getMotifs() as $key => $objMotif) {
+                if (trim($objMotif->getName()) == $motif) 
+                {
+                    //dump("Externe : " . $categorie);
+                    if ((!$rubrique->getClasseMontante() && !$rubrique->getClasseRecrutement()) || 
+                    ($rubrique->getClasseMontante() && $categorie == 2 && $promotion != 'G1') || 
+                    ($rubrique->getClasseRecrutement() && $categorie == 1 && ($promotion == 'G1' || $promotion == 'L1' || ($promotion =='G2' && $section =='SI')) )) {
+                        //dump($categorie);
+                        return $rubriques[$i];
+                    }
+                    
+                }
             }
         }        
         return null;
@@ -442,7 +489,7 @@ class EnyImportController extends AbstractController
         if ($count == 1) {
             return $studentFind[0];
         } else if  (count($studentFind) > 1) {
-            dump("Etudiant : " . $count);
+            //dump("Etudiant : " . $count);
         }
         return null;
     }
@@ -467,7 +514,7 @@ class EnyImportController extends AbstractController
                                         "num_eny_annee_acad" =>  (is_null($anneeAcad))?null:$anneeAcad->getId(),
                                         ]);
         
-        dump($promo_organisee);
+        //dump($promo_organisee);
 
         if ($promo_organisee instanceof EnyPromoOrganisee)
         {
@@ -495,7 +542,7 @@ class EnyImportController extends AbstractController
             {
                 return $inscriptions[0];
             } else if ($count > 1){
-                dump("Inscription : ".$count);
+                //dump("Inscription : ".$count);
             }
         }
         
