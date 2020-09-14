@@ -1,0 +1,48 @@
+<table class="table table-striped custom-table table-hover" id="entrees">
+    <thead>
+        <tr>
+            <th>N°</th>
+            <th>Date</th>
+            <th>Etudiant</th> 
+            <th>Promotion</th>                           
+            <th>Entrées</th>
+            <th>Source</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    {% set i = 1 %}
+    {% for eny_mvt in eny_mvts %}
+        {% if eny_mvt.typeMvt.id == 1 %}
+            <tr {% if eny_mvt.error == true or  not eny_mvt.rubrique or not eny_mvt.etudiant %}style="color: red;"{% endif %} >
+                <td>{{ i }}</td>
+                <td>{{ eny_mvt.paidAt ? eny_mvt.paidAt|date('Y-m-d h:m') : '' }}</td>
+                <td><b>{{ eny_mvt.etudiant ? eny_mvt.etudiant : '' }}</b></td>         
+                <td><b>{{ eny_mvt.etudiant ? eny_mvt.promotion: '' }}</b></td>       
+                <td><b>{{ eny_mvt.amount |number_format(2,',',' ') ~ " " ~ eny_mvt.devise.name }}</b></td>
+                <td>{{ eny_mvt.fromBank ? 'Banque' : 'Caisse' }}</td>
+                <td>
+                {% if eny_mvt.rubrique and eny_mvt.etudiant %}
+                    <a href="{{ path('eny_mvt_show', {'id': eny_mvt.id}) }}" class="btn btn-outline-primary "><i class="fa fa-eye" aria-hidden="true"></i></a>
+                {% else %}
+                    <a href="{{ path('eny_mvt_edit', {'id': eny_mvt.id}) }}" class="btn btn-outline-danger "><i class="fa fa-edit" aria-hidden="true"></i></a>
+                {% endif %}
+                    
+                </td>
+            </tr>
+        {% endif %}
+        {% set i = i + 1 %}
+    {% endfor %}
+    </tbody>
+    <tfoot>
+        <tr>
+            <th>N°</th>
+            <th>Date</th>
+            <th>Etudiant</th> 
+            <th>Promotion</th>                           
+            <th>Entrées</th>
+            <th>Source</th>
+            <th></th>
+        </tr>
+    </tfoot>
+</table>

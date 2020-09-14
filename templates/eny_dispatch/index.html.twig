@@ -12,16 +12,16 @@
         <div class="col-md-12">
             <div class="tabbable-line">
                 <ul class="nav customtab nav-tabs" role="tablist">
-                    <li class="nav-item"><a href="#tab1" class="nav-link active" data-toggle="tab"><i class="fa fa-dashcube" aria-hidden="true"></i> A repartir ({{ eny_mvts| length }})</a></li>
-                    <li class="nav-item"><a href="#tab2" class="nav-link" data-toggle="tab"><i class="fa fa-edit"></i> A corriger ({{ corriger| length }})</a></li>
-                    <li class="nav-item"><a href="#tab3" class="nav-link" data-toggle="tab"><i class="fa fa-check" aria-hidden="true"></i> Succès ({{ success| length }})</a></li>
+                    <li class="nav-item"><a href="#tab1" class="nav-link active" data-toggle="tab"><i class="fa fa-dashcube" aria-hidden="true"></i> A repartir (<span id="count_repartir">{{ eny_mvts| length }}</span>)</a></li>
+                    <li class="nav-item"><a href="#tab2" class="nav-link" data-toggle="tab"><i class="fa fa-edit"></i> A corriger (<span id="count_corriger">{{ corriger| length }}</span>)</a></li>
+                    <li class="nav-item"><a href="#tab3" class="nav-link" data-toggle="tab"><i class="fa fa-check" aria-hidden="true"></i> Succès (<span id="count_success">{{ success| length }}</span>)</a></li>
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active " id="tab1">                            
                         <div class="borderBox light bordered">
                             <div class="row">
-                                <div class="col-md"> <h3 class="page-header">Les entrées à répartir ({{ eny_mvts| length }})</h3></div>
-                                <div class="col-md"><button class="btn btn-circle btn-outline-primary float-right"><i class="fa fa-check-square-o"></i> Démarrer l'opération (<span id="counter">0</span>)</button></div>
+                                <div class="col-md"> <h3 class="page-header">Les entrées à répartir (<span id="length_mvt_dispatch">{{ eny_mvts| length }}</span>)</h3></div>
+                                <div class="col-md"><button class="btn btn-circle btn-outline-primary float-right " id="btn_dispatch"><i class="fa fa-check-square-o"></i> Démarrer l'opération (<span id="btn_mvt_dispatch">0</span>)</button></div>
                             </div>
                             <div class="alert alert-info">
                                 <h4>
@@ -54,7 +54,7 @@
 
                     <div class="tab-pane " id="tab3">                            
                         <div class="borderBox light bordered">
-                            <h3 class="page-header">Les entrées déjà reparties  ({{ success| length }})</h3>
+                            <h3 class="page-header">Les entrées déjà reparties  (<span id="length_mvt_success">{{ success| length }}</span>)</h3>
                             <div class="alert alert-success">
                                 <h4>
                                     <i class="fa fa-info"></i> Félicitations!</h4> 
@@ -82,36 +82,97 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>  
     
     <script>
-    $(document).ready(function(){
-        var table = $("#entrees").DataTable({
-            "language": {
-                    "decimal":        "",
-                    "emptyTable":     "<h1>Aucune donnée disponible</h1>",
-                    "info":           "Afficher _START_ à _END_ sur _TOTAL_ ligne(s)",
-                    "infoEmpty":      "Afficher 0 à 0 sur 0 ligne(s)",
-                    "infoFiltered":   "(<b>Filtré de _MAX_ ligne(s) au total</b>)",
-                    "infoPostFix":    "",
-                    "thousands":      ",",
-                    "lengthMenu":     "Afficher _MENU_ lignes",
-                    "loadingRecords": "Chargement...",
-                    "processing":     "Traitement en cours...",
-                    "search":         "Recherche:",
-                    "zeroRecords":    "<h2>Aucun enregistrements correspondants trouvés</h2>",
-                    "paginate": {
-                        "first":      "Premier",
-                        "last":       "Dernier",
-                        "next":       "Suivant",
-                        "previous":   "Précédent"
-                    },
-                    "aria": {
-                        "sortAscending":  ": activate to sort column ascending",
-                        "sortDescending": ": activate to sort column descending"
-                    }
-                },
-                destroy: true,
-                responsive: true,
-                autoFill: true
+    $(document).ready(function(){        
+        
+        $("#checkbox-all").on('click', function(e){         
+            if ($(this).is(':checked') == true) {
+                $("#btn_mvt_dispatch").text($("#length_mvt_dispatch").text())                
+            } else {
+                $("#btn_mvt_dispatch").text("0")
+            }
+            var table = $(e.target).closest('table')
+            $('td input:checkbox', table).prop("checked", $(this).is(':checked'))
+            //$('.checkbox-mvt').prop("checked", $(this).is(':checked'))
+            
         })
+
+        $('#repartir_mvt').on('change', '.checkbox-mvt',function() {
+
+            let btn_dispatch = $("#btn_mvt_dispatch")
+            let counter = parseInt(btn_dispatch.text())
+            let all = $("#checkbox-all").is(':checked')
+
+            if ($(this).is(':checked') == false )
+            {
+                if (all == true ) $("#checkbox-all").prop("checked", false)
+                counter --;
+            } else {
+                counter ++;
+            }
+            btn_dispatch.text(counter)
+        })
+
+        $("#btn_dispatch").click(function(e) {
+            e.preventDefault()
+            if (confirm("Voulez-vous démarrer le proccessus de dispatching ?")) {
+                $.each($("table[id='repartir_mvt'] td input[name='eny_mvt_id']:checked"), function(){
+                    process($(this).data("id"))
+                });
+            }
+        })
+
+        
+        function process(id_mvt) {
+            let image = $("#image-"+id_mvt)            
+            let btn_dispatch = parseInt($("#btn_mvt_dispatch").text());
+            if (btn_dispatch > 0) {
+                $.ajax({
+                    url: "/repartition/"+id_mvt+"/request",
+                    method: "POST",
+                    beforeSend:function(){
+                        image.css("visibility", "visible")
+                    },
+                    success: function(data) {                    
+                        if (data.search("success") > -1) {
+                            $("#row"+id_mvt).css('background-color', "#7f85b5")
+                            setTimeout(() => {
+                                let btn_dispatch = parseInt($("#btn_mvt_dispatch").text());
+                                let length_mvt_dispatch = parseInt($("#length_mvt_dispatch").text())
+                                let count_repartir = parseInt($("#count_repartir").text())
+                                let count_success = parseInt($("#count_success").text())
+                                let length_mvt_success = parseInt($("#length_mvt_success").text())
+
+                                count_repartir --;
+                                length_mvt_dispatch --;
+                                btn_dispatch --;
+                                count_success ++;    
+
+                                $("#count_success").text(count_success)
+                                $("#length_mvt_success").text(count_success)
+                                $("#count_repartir").text(count_repartir)                        
+                                $("#btn_mvt_dispatch").text(btn_dispatch)
+                                $("#length_mvt_dispatch").text(length_mvt_dispatch)
+                                
+                                var markup = "<tr>"+ $("#row"+id_mvt).html() +"</tr>";
+                                $("#tabSuccess").append( markup)
+                                $("#row"+id_mvt).remove()
+
+                            }, 500);
+                            
+                        }
+                    }, error: function(error) {
+                        console.error(error)
+                    }, complete: function(){
+                        image.css("visibility", "hidden")
+                    }
+                })
+            } else {
+                image.css("visibility", "hidden")
+                console.error("Error !!!")
+            }
+            
+        }
+
     })
     </script>
 {% endblock %}

@@ -11,6 +11,7 @@ use App\Entity\RubriqueCompte;
 use App\Entity\EnyDetailRubrique;
 use App\Entity\EnyMotif;
 use App\Repository\EnyCompteRepository;
+use App\Repository\EnyMvtRepository;
 use App\Repository\EnyRubriqueCptRepository;
 use App\Repository\EnyRubriqueRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -37,6 +38,35 @@ class EnyRubriqueController extends AbstractController
     {
         return $this->render('params/eny_rubrique/index.html.twig', [
             'controller_name' => 'EnyRubriqueController',
+        ]);
+    }
+
+    /**
+     * Liste de toutes les rubriques 
+     * @Route("{id}/list", name="_list_id")
+     * 
+     * @return Response
+     */
+    function listeCptsForRubrique(EnyRubrique $rubrique,  EnyMvtRepository $enyMvtRepository)
+    {
+        return $this->render('params/eny_rubrique/listCpts.html.twig', [
+            'rubrique' => $rubrique,
+            'eny_mvts' => $enyMvtRepository->findBy(["rubrique" => $rubrique, "deletedAt" => null]),
+            'mvtsError' => $enyMvtRepository->findBy(["rubrique" => null])
+        ]);
+    }
+
+    /**
+     * Liste de toutes les rubriques 
+     * @Route("list", name="_list")
+     * 
+     * @return Response
+     */
+    function liste(EnyRubriqueRepository $rubriques,  EnyMvtRepository $enyMvtRepository)
+    {
+        return $this->render('params/eny_rubrique/list.html.twig', [
+            'rubriques' => $rubriques->findAll(),
+            'mvtsError' => $enyMvtRepository->findBy(["rubrique" => null])
         ]);
     }
 

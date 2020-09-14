@@ -215,10 +215,12 @@ class EnyRubrique
      * @return Collection|EnyRubriqueCpt[]
      */
     public function getEnyRubriqueCptsDeuxiemeTranche(): Collection
-    {
-        return $this->enyRubriqueCpts->map(function(EnyRubriqueCpt $cpt) {
-            if (is_null($cpt->getDeletedAt()) && (! is_null($cpt->getTrancheTwo()))) return $cpt;
-        });
+    {        
+        $cpts = new ArrayCollection();
+        foreach ($this->enyRubriqueCpts as $k => $cpt) {
+            if (is_null($cpt->getDeletedAt()) && (!is_null($cpt->getTrancheTwo()))) $cpts->add($cpt);
+        }
+        return $cpts;
     }
 
     /**
@@ -226,9 +228,12 @@ class EnyRubrique
      */
     public function getEnyRubriqueCptsPremiereTranche(): Collection
     {
-        return $this->enyRubriqueCpts->map(function(EnyRubriqueCpt $cpt) {
-            if (is_null($cpt->getDeletedAt()) && (is_null($cpt->getTrancheTwo()))) return $cpt;
-        });
+        $cpts = new ArrayCollection();
+        //dump($this->enyRubriqueCpts->count());
+        foreach ($this->enyRubriqueCpts as $k => $cpt) {
+            if (is_null($cpt->getDeletedAt()) && (!is_null($cpt->getTrancheOne()))) $cpts->add($cpt);
+        }
+        return $cpts;
     }
 
     public function addEnyRubriqueCpt(EnyRubriqueCpt $enyRubriqueCpt): self
@@ -455,6 +460,105 @@ class EnyRubrique
     {
         $detail = $this->enyDetailRubriques->last();
         return $detail->getAmount()." ".$detail->getDevise()->getName();
+    }
+
+    public function getSoldeModel( $idType ):?string
+    {
+        $solde = 0.0;
+        $deviseName = "";
+        $returnSolde = [];
+        $p = 0;
+        /**@var EnyMvt $enyMvt */
+        foreach ($this->enyMvts as $key => $enyMvt) {
+            if ($enyMvt->getTypeMvt()->getId() == $idType)
+            {
+                if($deviseName != $enyMvt->getDevise()->getName()) 
+                {
+                    if ($solde > 0) $returnSolde []=number_format($solde, 2,',','.')." ".$deviseName;
+                    $deviseName = $enyMvt->getDevise()->getName();
+                    $solde  = $enyMvt->getAmount();
+                } else {
+                    $solde += $enyMvt->getAmount();
+                }
+                $p ++;
+            }            
+        }
+        
+        $returnSolde []=number_format($solde, 2,',','.')." ".$deviseName;
+        
+        return implode(" ", $returnSolde);
+    }
+
+    public function getSoldeEntree():?string
+    {
+        return $this->getSoldeModel(1);
+    }
+
+    public function getSoldeSortie():?string
+    {
+        return $this->getSoldeModel(2);
+    }
+
+    public function getSolde():?string
+    {
+        $soldeEntree = 0.0;
+        $soldeSortie = 0.0;
+        $deviseNameEntree = "";
+        $deviseNameSortie = "";
+        $returnSoldeEntree = [];
+        $returnSoldeSortie = [];
+        /**@var EnyMvt $enyMvt */
+        foreach ($this->enyMvts as $key => $enyMvt) {
+            if ($enyMvt->getTypeMvt()->getId() == 1)
+            {
+                if($deviseNameEntree != $enyMvt->getDevise()->getName()) 
+                {
+                    if (!empty($deviseNameEntree) && $soldeEntree > 0) 
+                    {
+                        $returnSoldeEntree [$deviseNameEntree]=$soldeEntree;
+                    }
+                    $deviseNameEntree = $enyMvt->getDevise()->getName();
+                    $soldeEntree  = $enyMvt->getAmount();
+                } else {
+                    $soldeEntree += $enyMvt->getAmount();
+                }
+                
+            }          
+        }
+        $returnSoldeEntree [$deviseNameEntree]=$soldeEntree;
+
+        foreach ($this->enyMvts as $key => $enyMvt) {
+            if ($enyMvt->getTypeMvt()->getId() == 2) {
+                if($deviseNameSortie != $enyMvt->getDevise()->getName()) 
+                {
+                    if (!empty($deviseNameSortie) && $soldeSortie > 0) 
+                    {
+                        $returnSoldeSortie [$deviseNameSortie]=$soldeSortie;
+                    }
+                    $deviseNameSortie = $enyMvt->getDevise()->getName();
+                    $soldeSortie  = $enyMvt->getAmount();
+                } else {
+                    $soldeSortie += $enyMvt->getAmount();
+                }
+            }
+        }
+        $returnSoldeSortie [$deviseNameSortie]=$soldeSortie;
+        
+        $returnSolde = [];
+        $t = 0;
+        foreach ($returnSoldeEntree as $k => $v) {
+            $t = 0;
+            foreach ($returnSoldeSortie as $k2 => $v2) {
+                if ($k2 === $k) 
+                {
+                    $returnSolde [] = number_format($v - $v2,2,',','.' ).' '.$k;
+                    $t ++;
+                }
+            }
+            if ($t == 0) {$returnSolde [] = number_format($v,2,',','.' ).' '.$k;}
+        }
+        
+        return implode(" ", $returnSolde);
     }
 
     /**

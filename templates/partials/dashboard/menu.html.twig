@@ -76,11 +76,11 @@
 									<span class="title">Rubriques - comptes</span><span class="arrow"></span></a>
 								<ul class="sub-menu">
 									<li class="nav-item">
-										<a href="{{ path('admin_rubriques_index') }}" class="nav-link "> <span class="title"> <i class="fas fa-table   "></i> Liste des rubriques</span>
+										<a href="{{ path('admin_rubriques_list') }}" class="nav-link "> <span class="title"> <i class="fas fa-table   "></i> Liste des rubriques</span>
 										</a>
 									</li>
 									<li class="nav-item">
-										<a href="#" class="nav-link "> <span class="title"> <i class="fas fa-table   "></i> Liste des Comptes</span>
+										<a href="{{ path('admin_cpt_list') }}" class="nav-link "> <span class="title"> <i class="fas fa-table   "></i> Liste des Comptes</span>
 										</a>
 									</li>
 								</ul>
@@ -113,39 +113,43 @@
 									<span class="title">Paramètres</span><span class="arrow"></span></a>
 								<ul class="sub-menu">
 									<li class="nav-item">
-										<a href="{{ path('admin_motif_index') }}" class="nav-link "><i class="fa fa-plus-circle" aria-hidden="true"></i> <span class="title">Motifs</span>
+										<a href="{{ path('admin_motif_index') }}" class="nav-link "><span class="title"> <i class="fas fa-table   " aria-hidden="true"></i> <span class="title">Motifs</span>
+										</a>
+									</li>
+									<li class="nav-item">
+										<a href="{{ path('admin_rubriques_index') }}" class="nav-link "> <span class="title"> <i class="fas fa-table   "></i> Liste des rubriques</span>
 										</a>
 									</li>
                                     <li class="nav-item">
-										<a href="{{ path('admin_srubrique_index') }}" class="nav-link "><i class="fa fa-plus-circle" aria-hidden="true"></i> <span class="title">Sous-rubriques</span>
+										<a href="{{ path('admin_srubrique_index') }}" class="nav-link "><span class="title"> <i class="fas fa-table   " aria-hidden="true"></i> <span class="title">Sous-rubriques</span>
 										</a>
 									</li>
 									<li class="nav-item">
-										<a href="{{ path('admin_cpt_index') }}" class="nav-link "><i class="fa fa-plus-circle" aria-hidden="true"></i> <span class="title">Comptes</span>
+										<a href="{{ path('admin_cpt_index') }}" class="nav-link "><span class="title"> <i class="fas fa-table   " aria-hidden="true"></i> <span class="title">Comptes</span>
 										</a>
 									</li>
 									<li class="nav-item">
-										<a href="{{ path('eny_bank_index') }}" class="nav-link "><i class="fa fa-money" aria-hidden="true"></i> <span class="title">Banques</span>
+										<a href="{{ path('eny_bank_index') }}" class="nav-link "><span class="title"> <i class="fas fa-table" aria-hidden="true"></i> <span class="title">Banques</span>
 										</a>
 									</li>
 									<li class="nav-item">
-										<a href="{{ path('eny_banking_info_index') }}" class="nav-link "><i class="fa fa-money" aria-hidden="true"></i> <span class="title">Comptes bancaires</span>
+										<a href="{{ path('eny_banking_info_index') }}" class="nav-link "><span class="title"> <i class="fas fa-table" aria-hidden="true"></i> <span class="title">Comptes bancaires</span>
 										</a>
 									</li>
 									<li class="nav-item">
-										<a href="{{ path('eny_section_index') }}" class="nav-link "><i class="fa fa-plus-circle" aria-hidden="true"></i> <span class="title">Section</span>
+										<a href="{{ path('eny_section_index') }}" class="nav-link "><span class="title"> <i class="fas fa-table" aria-hidden="true"></i> <span class="title">Section</span>
 										</a>
 									</li>
 									<li class="nav-item">
-										<a href="{{ path('eny_promo_organisee_index') }}" class="nav-link "><i class="fa fa-plus-circle" aria-hidden="true"></i> <span class="title">Promotions</span>
+										<a href="{{ path('eny_promo_organisee_index') }}" class="nav-link "><span class="title"> <i class="fas fa-table" aria-hidden="true"></i> <span class="title">Promotions</span>
 										</a>
 									</li>
 									<li class="nav-item">
-										<a href="{{ path('devise_index') }}" class="nav-link "><i class="fa fa-plus-circle" aria-hidden="true"></i> <span class="title">Devise</span>
+										<a href="{{ path('devise_index') }}" class="nav-link "><span class="title"> <i class="fas fa-table" aria-hidden="true"></i> <span class="title">Devise</span>
 										</a>
 									</li>
 									<li class="nav-item">
-										<a href="{{ path('eny_tranche_index') }}" class="nav-link "><i class="fa fa-plus-circle" aria-hidden="true"></i> <span class="title">Tranches</span>
+										<a href="{{ path('eny_tranche_index') }}" class="nav-link "><span class="title"> <i class="fas fa-table" aria-hidden="true"></i> <span class="title">Tranches</span>
 										</a>
 									</li>
 								</ul>

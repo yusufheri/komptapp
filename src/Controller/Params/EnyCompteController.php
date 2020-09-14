@@ -2,11 +2,13 @@
 
 namespace App\Controller\Params;
 
+use DateTime;
 use App\Entity\Compte;
 use App\Entity\EnyCompte;
 use App\Form\EnyCompteType;
-use DateTime;
 use Psr\Log\LoggerInterface;
+use App\Repository\EnyMvtRepository;
+use App\Repository\EnyCompteRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,6 +30,35 @@ class EnyCompteController extends AbstractController
     {
         return $this->render('params/eny_compte/index.html.twig', [
             'controller_name' => 'EnyCompteController',
+        ]);
+    }
+
+    /**
+     * Liste de toutes les rubriques 
+     * @Route("{id}/list", name="_list_id")
+     * 
+     * @return Response
+     */
+    function listeCptsForRubrique(EnyCompte $cpte,  EnyMvtRepository $enyMvtRepository)
+    {
+        return $this->render('params/eny_compte/detailCptAppro.html.twig', [
+            'cpte' => $cpte,
+            'eny_mvts' => $enyMvtRepository->findBy(["compte" => $cpte, "deletedAt" => null]),
+            'mvtsError' => $enyMvtRepository->findBy(["rubrique" => null])
+        ]);
+    }
+
+    /**
+     * Liste de tous les comptes 
+     * @Route("list", name="_list")
+     * 
+     * @return Response
+     */
+    function liste(EnyCompteRepository $compte,  EnyMvtRepository $enyMvtRepository)
+    {
+        return $this->render('params/eny_compte/cptsAppro.html.twig', [
+            'cpts' => $compte->findBy(["deletedAt" => null], ["name" => "ASC"]),
+            'mvtsError' => $enyMvtRepository->findBy(["rubrique" => null])
         ]);
     }
 

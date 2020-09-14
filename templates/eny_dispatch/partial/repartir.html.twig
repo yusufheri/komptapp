@@ -1,6 +1,6 @@
 <div class="table-wrap">
     <div class="table-responsive">
-        <table class="table table-striped custom-table table-hover" id="entrees">
+        <table class="table table-striped custom-table table-hover" id="repartir_mvt">
             <thead>
                 <tr>
                     <th><input id="checkbox-all" type="checkbox" ></th>
@@ -16,9 +16,9 @@
             <tbody>
             {% set i = 1 %}
             {% for eny_mvt in eny_mvts %}
-                <tr>
+                <tr id="row{{eny_mvt.id}}">
                     <td>
-                        <input id="checkbox-{{eny_mvt.id}}" type="checkbox"  data-id="{{ eny_mvt.id }}">
+                        <input class="checkbox-mvt"  type="checkbox" name="eny_mvt_id"  data-id="{{ eny_mvt.id }}">
                     </td>
                     <td>{{ eny_mvt.paidAt ? eny_mvt.paidAt|date('Y-m-d h:m') : '' }}</td>
                     <td><b>{{ eny_mvt.etudiant ? eny_mvt.etudiant : '' }}</b></td>         
@@ -28,7 +28,7 @@
                     <td>{{ eny_mvt.fromBank ? 'Banque' : 'Caisse' }}</td>
                     <td>
                         <div class="text-center">
-                            <img src="/assets/img/loading2.gif" alt="" srcset="" width="35" style="display:none;">
+                            <img src="/assets/img/loading2.gif" id="image-{{eny_mvt.id}}" alt="" srcset="" width="35" style="visibility:hidden;">
                         </div>
                     {# {% if eny_mvt.rubrique and eny_mvt.etudiant %}
                         <a href="{{ path('eny_mvt_show', {'id': eny_mvt.id}) }}" class="btn btn-outline-primary "><i class="fa fa-eye" aria-hidden="true"></i></a>

@@ -1,0 +1,35 @@
+<table class="table table-striped custom-table table-hover" id="entrees">
+    <thead>
+        <tr>
+            <th>N°</th>
+            <th>Date</th>
+            <th>Rubrique</th> 
+            <th>Montant</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    {% set i = 0 %}
+    {% for cpt in cpte.enyRubriqueCpts %}
+        {% for dispatch in cpt.enyDispatches %}
+            {% set i = i + 1 %}
+            <tr>
+                <td>{{ i }}</td>
+                <td>{{ dispatch.createdAt ?  dispatch.createdAt |date('Y-m-d H:i:s') : ''}}</td>
+                <td> <a href="{{ path('eny_mvt_show', {id: dispatch.mvt.id }) }}">{{ dispatch.mvt ? dispatch.mvt.rubrique.name : '' }}</a></td>
+                <td>{{ dispatch.amount | number_format(2,',','.') }}</td>
+                <td></td>
+            </tr>
+        {% endfor %}
+    {% endfor %}
+    </tbody>
+    <tfoot>
+        <tr>
+            <th>N°</th>
+            <th>Date</th>
+            <th>Rubrique</th> 
+            <th>Montant</th>
+            <th></th>
+        </tr>
+    </tfoot>
+</table>

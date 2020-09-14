@@ -4,27 +4,30 @@
             <thead>
                 <tr>
                     <td class="text-center" width="4%">N°</td>
-                    <td class="text-left" width="17%">Enregistré</td>
-                    <td class="text-left" width="20%">Sous-rubrique</td>
-                    <td class="text-left" width="25%">Comptes</td>
+                    <td class="text-left" width="35%">Comptes</td>
                     <td class="text-center" width="9%">%</td>
-                    <td class="text-left" width="12%">Montant</td>
+                    <td class="text-center" width="12%">1 è tranche</td>
+                    <td class="text-center" width="12%">2 è tranche</td>
+                    <td class="text-right" width="15%">Totalité</td>
                     <td class="text-center" ></td>
                 </tr>
             </thead>
             <tbody>
             {% set devise = rubrique.lastDetailsRubrique.devise.name %}
-            {% set somme = 0 %} 
+            {% set somme = 0 %}
+            {% set somme1 = 0 %}
+            {% set somme2 = 0 %} 
             {% set percent = 0 %}
             {% set i = 1 %}
                 {% for item in rubrique.enyRubriqueCpts %}
                 {% if item.deletedAt == null %}
                     <tr>
                         <td class="text-center">{{ i }}</td>
-                        <td class="text-left" >{{item.createdAt | date("d-m-Y H:m:s") | format_datetime(locale='fr')}}</td>
-                        <td >{{item.nameSrubrique}}</td>
+                        {# <td class="text-left" >{{item.createdAt | date("d-m-Y H:m:s") | format_datetime(locale='fr')}}</td> #}
                         <td >{{item.compte.name}}</td>
                         <td class="text-center">{{item.percent}}</td>
+                        <td class="text-right"><b>{{item.trancheOne | number_format(2,',','.') ~' '~ devise}}</b></td>
+                        <td class="text-right"><b>{{item.trancheTwo | number_format(2,',','.') ~' '~ devise}}</b></td>
                         <td class="text-right"><b>{{item.amount | number_format(2,',','.') ~' '~ devise}}</b></td>                        
                         <td class="text-center">
                             <button class="btn btn-primary btn-circle" id="btnEditCompte" data-id="{{item.id}}"><i class="fa fa-edit" aria-hidden="true"></i></button>
@@ -32,6 +35,8 @@
                         </td>                       
                     </tr>
                     {% set somme  = somme + item.amount %}
+                    {% set somme1  = somme1 + item.trancheOne %}
+                    {% set somme2  = somme2 + item.trancheTwo %}
                     {% set percent = percent + item.percent %}
                     {% set i = i + 1 %}
                 {% endif %}                    
@@ -40,11 +45,11 @@
             <tfoot>
                 <tr style="background-color:">
                     <td class="text-center" width="4%"></td>
-                    <td class="text-center" width="17%"></td>
-                    <td class="text-left" width="20%"></td>
-                    <td class="text-left" width="25%"></td>
-                    <td class="text-center" width="9%"><b>{{ percent }} %</b></td>
-                    <td class="text-right" width="12%"><b>{{somme | number_format(2,',',' ') ~' '~ devise}}</b></td>
+                    <td class="text-left" width="35%"></td>
+                    <td class="text-center" width="9%"><b>{{ percent | number_format(2,',',' ') }} %</b></td>
+                    <td class="text-right" width="12%"><b>{{somme1 | number_format(2,',',' ') ~' '~ devise}}</b></td>
+                    <td class="text-right" width="12%"><b>{{somme2 | number_format(2,',',' ') ~' '~ devise}}</b></td>
+                    <td class="text-right" width="15%"><b>{{somme | number_format(2,',',' ') ~' '~ devise}}</b></td>
                     <td class="text-center" ></td>
                 </tr>
             </tfoot>                                

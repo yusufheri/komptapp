@@ -177,4 +177,50 @@ class EnyCompte
 
         return $this;
     }
+
+    public function getSoldeEntree():?float
+    {
+        $solde = 0.0;
+
+        /**@var EnyRubriqueCpt $rubriqueCpt */
+        foreach ($this->enyRubriqueCpts as $k => $rubriqueCpt) {
+            if (is_null($rubriqueCpt->getDeletedAt()))
+            {
+                /**@var EnyDispatch $dispatch */
+                foreach ($rubriqueCpt->getEnyDispatches() as $key => $dispatch) {
+                    $solde += $dispatch->getAmount();
+                }
+            }
+        }
+        //$returnSolde []=number_format($solde, 2,',','.')." ".$deviseName;
+        
+        return $solde;
+    }
+
+
+    public function getSoldeSortie():?float
+    {
+        $solde = 0.0;
+
+        /**@var EnyRubriqueCpt $rubriqueCpt */
+        foreach ($this->enyRubriqueCpts as $k => $rubriqueCpt) {
+            if (is_null($rubriqueCpt->getDeletedAt()))
+            {
+                /**@var EnyMvt $enyMvt */
+                foreach ($rubriqueCpt->getEnyMvts() as $key => $enyMvt) {
+                    if (is_null($enyMvt->getError()) && is_null($enyMvt->getDeletedAt())){
+                        $solde += $enyMvt->getAmount();
+                    }
+                }
+            }
+        }
+        //$returnSolde []=number_format($solde, 2,',','.')." ".$deviseName;
+        
+        return $solde;
+    }
+
+    public function getSolde():?float
+    {        
+        return $this->getSoldeEntree() - $this->getSoldeSortie();
+    }
 }
