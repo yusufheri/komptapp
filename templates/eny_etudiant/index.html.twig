@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Repertoire Etudiants::komptApp{% endblock %}
+
+
+{% block body %}
+    {% include "home/partials/page-bar.html.twig" with {title : "Repertoires", bigTitle: "Liste des étudiants"  } %}
+    <div class="row">    
+        <div class="col-md-9">
+            <form class="search-form-opened" action="#" method="GET">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Recherche..." name="query">
+                    <span class="input-group-btn">
+                        <a href="javascript:;" class="btn submit">
+                            <i class="icon-magnifier"></i>
+                        </a>
+                    </span>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-3"><a href="{{ path('eny_etudiant_new') }}" class="btn btn-outline-primary mt-3 mb-3 float-right"><i class="fa fa-plus-circle    "></i> Nouvel enregistrement</a></div>
+    </div>
+    <div class="table-wrap">
+        <div class="table-responsive">
+            <table class="table table-striped custom-table table-hover" id="student">
+                <thead>
+                    <tr>
+                        <th>N°</th>
+                        <th>Matricule</th>
+                        <th>Etudiant</th> 
+                        <th>Promotion</th>                          
+                        <th>Frais académiques</th>
+                        <th>Autres Paiements</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% set i = 1 %}
+                {% for student in etudiants %}
+                    <tr >
+                        <td>{{ i }}</td>
+                        <td>{{ student.matricule }}</td>
+                        <td><b>{{ student.nom ~' '~ student.postnom ~' '~ student.prenom }}</b></td>         
+                        <td><b></b></td>         
+                        <td></td>         
+                        <td><b></b></td>
+                        <td>
+                            <a href="#" class="btn btn-outline-primary btn-circle"><i class="fa fa-eye"></i></a>
+                            <a href="#" class="btn btn-outline-danger btn-circle"><i class="fa fa-edit"></i></a>
+                        </td>
+                    </tr>
+                    {% set i = i + 1 %}
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>N°</th>
+                        <th>Matricule</th>
+                        <th>Etudiant</th> 
+                        <th>Promotion</th>                          
+                        <th>Frais académiques</th>
+                        <th>Autres Paiements</th>
+                        <th></th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block javascripts %}
+    <script>
+    $(document).ready(function(){
+        
+    })
+    </script>
+{% endblock %}

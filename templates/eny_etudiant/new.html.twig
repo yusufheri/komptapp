@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Repertoire Etudiants::komptApp{% endblock %}
+
+
+{% block body %}
+    {% include "home/partials/page-bar.html.twig" with {title : "Repertoires", bigTitle: "Liste des étudiants"  } %}
+    {{ form_start(form) }}
+    <div class="row">
+        <div class="col-md-4">{{ form_row(form.anneeAcad) }}</div>
+        <div class="col-md-4">{{ form_row(form.matricule) }}</div>
+        <div class="col-md-4">{{ form_row(form.sexe) }}</div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">{{ form_row(form.nom) }}</div>
+        <div class="col-md-4">{{ form_row(form.postnom) }}</div>
+        <div class="col-md-4">{{ form_row(form.prenom) }}</div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">{{ form_row(form.province) }}</div>
+        <div class="col-md-4">{{ form_row(form.lieuNais) }}</div>
+        <div class="col-md-4">{{ form_row(form.dateNais) }}</div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">{{ form_row(form.tel) }}</div>
+        <div class="col-md-4">{{ form_row(form.commune) }}</div>
+        <div class="col-md-4">{{ form_row(form.adresse) }}</div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">{{ form_row(form.nomPere) }}</div>
+        <div class="col-md-6">{{ form_row(form.nomMere) }}</div>       
+    </div>
+    
+    {{ form_widget(form) }}
+    {{ form_end(form) }}
+
+{% endblock %}
+
+
+{% block javascripts %}
+    <script>
+    $(document).ready(function(){
+        
+    })
+    </script>
+{% endblock %}
